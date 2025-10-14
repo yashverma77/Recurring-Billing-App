@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvoicePro - Micro-SaaS Billing Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        html, body {
+            height: 100%;
+        }
+        
+        .main-container {
+            background: white;
+            min-height: 100%;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .stat-card .card-body {
+            padding: 2rem;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .page-section {
+            display: none;
+        }
+        
+        .page-section.active {
+            display: block;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+        
+        .invoice-preview {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .company-header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .invoice-table {
+            margin: 2rem 0;
+        }
+        
+        .invoice-total {
+            background: #667eea;
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: right;
+        }
+        
+        @media (max-width: 768px) {
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#"><i class="fas fa-receipt me-2"></i>InvoicePro</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" onclick="showPage('dashboard')">
+                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showPage('invoices')">
+                                <i class="fas fa-file-invoice me-1"></i>Invoices
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showPage('subscriptions')">
+                                <i class="fas fa-sync-alt me-1"></i>Subscriptions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showPage('reports')">
+                                <i class="fas fa-chart-bar me-1"></i>Reports
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showPage('settings')">
+                                <i class="fas fa-cog me-1"></i>Settings
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="page-section active">
+            <div class="container-fluid p-4">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h2 class="mb-4"><i class="fas fa-tachometer-alt me-2"></i>Dashboard Overview</h2>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-dollar-sign fa-2x mb-3"></i>
+                                <div class="stat-number" id="totalRevenue">$0</div>
+                                <div>Total Revenue</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-file-invoice fa-2x mb-3"></i>
+                                <div class="stat-number" id="totalInvoices">0</div>
+                                <div>Total Invoices</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-users fa-2x mb-3"></i>
+                                <div class="stat-number" id="activeSubscriptions">0</div>
+                                <div>Active Subscriptions</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                                <div class="stat-number" id="pendingInvoices">0</div>
+                                <div>Pending Invoices</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Quick Actions</h5>
+                                <button class="btn btn-primary me-2 mb-2" onclick="showCreateInvoiceModal()">
+                                    <i class="fas fa-plus me-1"></i>New Invoice
+                                </button>
+                                <button class="btn btn-primary me-2 mb-2" onclick="showCreateSubscriptionModal()">
+                                    <i class="fas fa-sync-alt me-1"></i>New Subscription
+                                </button>
+                                <button class="btn btn-outline-primary me-2 mb-2" onclick="showPage('reports')">
+                                    <i class="fas fa-chart-line me-1"></i>View Reports
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Recent Invoices</h5>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Invoice #</th>
+                                                <th>Client</th>
+                                                <th>Amount</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recentInvoicesTable">
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted">No invoices yet</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Revenue Chart</h5>
+                                <div class="chart-container">
+                                    <canvas id="revenueChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoices Section -->
+        <div id="invoices" class="page-section">
+            <div class="container-fluid p-4">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h2><i class="fas fa-file-invoice me-2"></i>Invoice Management</h2>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button class="btn btn-primary" onclick="showCreateInvoiceModal()">
+                            <i class="fas fa-plus me-1"></i>Create Invoice
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Invoice #</th>
+                                        <th>Client</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invoicesTable">
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">No invoices created yet</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subscriptions Section -->
+        <div id="subscriptions" class="page-section">
+            <div class="container-fluid p-4">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h2><i class="fas fa-sync-alt me-2"></i>Subscription Management</h2>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button class="btn btn-primary" onclick="showCreateSubscriptionModal()">
+                            <i class="fas fa-plus me-1"></i>Create Subscription
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Plan Name</th>
+                                        <th>Client</th>
+                                        <th>Amount</th>
+                                        <th>Billing Cycle</th>
+                                        <th>Status</th>
+                                        <th>Next Billing</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subscriptionsTable">
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted">No subscriptions created yet</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div id="reports" class="page-section">
+            <div class="container-fluid p-4">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h2><i class="fas fa-chart-bar me-2"></i>Reports & Analytics</h2>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Revenue by Month</h5>
+                                <div class="chart-container">
+                                    <canvas id="monthlyRevenueChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Revenue by Client</h5>
+                                <div class="chart-container">
+                                    <canvas id="clientRevenueChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Financial Summary</h5>
+                                <div class="row">
+                                    <div class="col-md-3 text-center">
+                                        <h4 class="text-success" id="reportTotalRevenue">$0</h4>
+                                        <p class="text-muted">Total Revenue</p>
+                                    </div>
+                                    <div class="col-md-3 text-center">
+                                        <h4 class="text-primary" id="reportMonthlyRevenue">$0</h4>
+                                        <p class="text-muted">This Month</p>
+                                    </div>
+                                    <div class="col-md-3 text-center">
+                                        <h4 class="text-warning" id="reportPendingAmount">$0</h4>
+                                        <p class="text-muted">Pending Amount</p>
+                                    </div>
+                                    <div class="col-md-3 text-center">
+                                        <h4 class="text-info" id="reportSubscriptionRevenue">$0</h4>
+                                        <p class="text-muted">Subscription Revenue</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings" class="page-section">
+            <div class="container-fluid p-4">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h2><i class="fas fa-cog me-2"></i>Settings</h2>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Company Information</h5>
+                                <form id="companyForm">
+                                    <div class="mb-3">
+                                        <label class="form-label">Company Name</label>
+                                        <input type="text" class="form-control" id="companyName" value="Your Company Name">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Address</label>
+                                        <textarea class="form-control" id="companyAddress" rows="3">123 Business Street, City, State 12345</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="companyEmail" value="contact@yourcompany.com">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Phone</label>
+                                        <input type="tel" class="form-control" id="companyPhone" value="+1 (555) 123-4567">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Business Settings</h5>
+                                <form id="businessForm">
+                                    <div class="mb-3">
+                                        <label class="form-label">Default Currency</label>
+                                        <select class="form-select" id="defaultCurrency">
+                                            <option value="USD">USD ($)</option>
+                                            <option value="EUR">EUR (€)</option>
+                                            <option value="GBP">GBP (£)</option>
+                                            <option value="INR">INR (₹)</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Tax Rate (%)</label>
+                                        <input type="number" class="form-control" id="taxRate" value="10" step="0.01">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Invoice Prefix</label>
+                                        <input type="text" class="form-control" id="invoicePrefix" value="INV">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card mt-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Data Management</h5>
+                                <p class="text-muted">Export your data or reset the application</p>
+                                <button class="btn btn-outline-primary me-2" onclick="exportData()">
+                                    <i class="fas fa-download me-1"></i>Export Data
+                                </button>
+                                <button class="btn btn-outline-danger" onclick="resetData()">
+                                    <i class="fas fa-trash me-1"></i>Reset All Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Invoice Modal -->
+    <div class="modal fade" id="createInvoiceModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Invoice</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="invoiceForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Client Name</label>
+                                    <input type="text" class="form-control" id="clientName" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Client Email</label>
+                                    <input type="email" class="form-control" id="clientEmail" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Client Address</label>
+                            <textarea class="form-control" id="clientAddress" rows="2"></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Invoice Date</label>
+                                    <input type="date" class="form-control" id="invoiceDate" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Due Date</label>
+                                    <input type="date" class="form-control" id="dueDate" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h6 class="mb-3">Invoice Items</h6>
+                        <div id="invoiceItems">
+                            <div class="row invoice-item mb-2">
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" placeholder="Description" name="description" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" class="form-control" placeholder="Qty" name="quantity" value="1" min="1" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" class="form-control" placeholder="Rate" name="rate" step="0.01" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" placeholder="Amount" name="amount" readonly>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeInvoiceItem(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm mb-3" onclick="addInvoiceItem()">
+                            <i class="fas fa-plus me-1"></i>Add Item
+                        </button>
+                        
+                        <div class="row">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    <strong>Subtotal: $<span id="invoiceSubtotal">0.00</span></strong>
+                                </div>
+                                <div class="mb-2">
+                                    Tax (<span id="invoiceTaxRate">10</span>%): $<span id="invoiceTax">0.00</span>
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Total: $<span id="invoiceTotal">0.00</span></strong>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="createInvoice()">Create Invoice</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Subscription Modal -->
+    <div class="modal fade" id="createSubscriptionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Subscription</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="subscriptionForm">
+                        <div class="mb-3">
+                            <label class="form-label">Plan Name</label>
+                            <input type="text" class="form-control" id="planName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Client Name</label>
+                            <input type="text" class="form-control" id="subClientName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Client Email</label>
+                            <input type="email" class="form-control" id="subClientEmail" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Amount</label>
+                                    <input type="number" class="form-control" id="subAmount" step="0.01" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Billing Cycle</label>
+                                    <select class="form-select" id="billingCycle" required>
+                                        <option value="monthly">Monthly</option>
+                                        <option value="quarterly">Quarterly</option>
+                                        <option value="yearly">Yearly</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="startDate" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="createSubscription()">Create Subscription</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice Preview Modal -->
+    <div class="modal fade" id="invoicePreviewModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Invoice Preview</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="invoicePreviewContent"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="printInvoice()">
+                        <i class="fas fa-print me-1"></i>Print
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Application State
+        let appData = {
+            invoices: [],
+            subscriptions: [],
+            settings: {
+                companyName: 'Your Company Name',
+                companyAddress: '123 Business Street, City, State 12345',
+                companyEmail: 'contact@yourcompany.com',
+                companyPhone: '+1 (555) 123-4567',
+                currency: 'USD',
+                taxRate: 10,
+                invoicePrefix: 'INV'
+            }
+        };
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('invoiceProData');
+            if (saved) {
+                appData = { ...appData, ...JSON.parse(saved) };
+            }
+            updateDashboard();
+            updateAllTables();
+            updateReports();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('invoiceProData', JSON.stringify(appData));
+        }
+
+        // Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            if (pageId === 'reports') {
+                setTimeout(updateReports, 100);
+            }
+        }
+
+        // Dashboard Updates
+        function updateDashboard() {
+            const totalRevenue = appData.invoices
+                .filter(inv => inv.status === 'paid')
+                .reduce((sum, inv) => sum + inv.total, 0);
+            
+            const pendingInvoices = appData.invoices.filter(inv => inv.status === 'pending').length;
+            const activeSubscriptions = appData.subscriptions.filter(sub => sub.status === 'active').length;
+
+            document.getElementById('totalRevenue').textContent = `$${totalRevenue.toFixed(2)}`;
+            document.getElementById('totalInvoices').textContent = appData.invoices.length;
+            document.getElementById('activeSubscriptions').textContent = activeSubscriptions;
+            document.getElementById('pendingInvoices').textContent = pendingInvoices;
+
+            updateRecentInvoicesTable();
+            updateDashboardChart();
+        }
+
+        function updateRecentInvoicesTable() {
+            const tbody = document.getElementById('recentInvoicesTable');
+            const recentInvoices = appData.invoices.slice(-5).reverse();
+            
+            if (recentInvoices.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No invoices yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = recentInvoices.map(invoice => `
+                <tr>
+                    <td>${invoice.number}</td>
+                    <td>${invoice.clientName}</td>
+                    <td>$${invoice.total.toFixed(2)}</td>
+                    <td><span class="badge bg-${getStatusColor(invoice.status)}">${invoice.status}</span></td>
+                    <td>${new Date(invoice.date).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateDashboardChart() {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (window.dashboardChart) {
+                window.dashboardChart.destroy();
+            }
+
+            const monthlyData = getMonthlyRevenueData();
+            
+            window.dashboardChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: monthlyData.labels,
+                    datasets: [{
+                        label: 'Revenue',
+                        data: monthlyData.data,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Invoice Management
+        function showCreateInvoiceModal() {
+            document.getElementById('invoiceDate').value = new Date().toISOString().split('T')[0];
+            const dueDate = new Date();
+            dueDate.setDate(dueDate.getDate() + 30);
+            document.getElementById('dueDate').value = dueDate.toISOString().split('T')[0];
+            document.getElementById('invoiceTaxRate').textContent = appData.settings.taxRate;
+            
+            new bootstrap.Modal(document.getElementById('createInvoiceModal')).show();
+        }
+
+        function addInvoiceItem() {
+            const container = document.getElementById('invoiceItems');
+            const newItem = document.createElement('div');
+            newItem.className = 'row invoice-item mb-2';
+            newItem.innerHTML = `
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Description" name="description" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" placeholder="Qty" name="quantity" value="1" min="1" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="number" class="form-control" placeholder="Rate" name="rate" step="0.01" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" placeholder="Amount" name="amount" readonly>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeInvoiceItem(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(newItem);
+            attachInvoiceItemListeners(newItem);
+        }
+
+        function removeInvoiceItem(button) {
+            button.closest('.invoice-item').remove();
+            calculateInvoiceTotal();
+        }
+
+        function attachInvoiceItemListeners(item) {
+            const qtyInput = item.querySelector('input[name="quantity"]');
+            const rateInput = item.querySelector('input[name="rate"]');
+            
+            qtyInput.addEventListener('input', calculateInvoiceTotal);
+            rateInput.addEventListener('input', calculateInvoiceTotal);
+        }
+
+        function calculateInvoiceTotal() {
+            let subtotal = 0;
+            document.querySelectorAll('.invoice-item').forEach(item => {
+                const qty = parseFloat(item.querySelector('input[name="quantity"]').value) || 0;
+                const rate = parseFloat(item.querySelector('input[name="rate"]').value) || 0;
+                const amount = qty * rate;
+                item.querySelector('input[name="amount"]').value = amount.toFixed(2);
+                subtotal += amount;
+            });
+
+            const taxRate = appData.settings.taxRate / 100;
+            const tax = subtotal * taxRate;
+            const total = subtotal + tax;
+
+            document.getElementById('invoiceSubtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('invoiceTax').textContent = tax.toFixed(2);
+            document.getElementById('invoiceTotal').textContent = total.toFixed(2);
+        }
+
+        function createInvoice() {
+            const form = document.getElementById('invoiceForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const items = [];
+            document.querySelectorAll('.invoice-item').forEach(item => {
+                const description = item.querySelector('input[name="description"]').value;
+                const quantity = parseFloat(item.querySelector('input[name="quantity"]').value);
+                const rate = parseFloat(item.querySelector('input[name="rate"]').value);
+                
+                if (description && quantity && rate) {
+                    items.push({
+                        description,
+                        quantity,
+                        rate,
+                        amount: quantity * rate
+                    });
+                }
+            });
+
+            if (items.length === 0) {
+                alert('Please add at least one invoice item.');
+                return;
+            }
+
+            const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
+            const tax = subtotal * (appData.settings.taxRate / 100);
+            const total = subtotal + tax;
+
+            const invoice = {
+                id: Date.now(),
+                number: `${appData.settings.invoicePrefix}-${String(appData.invoices.length + 1).padStart(4, '0')}`,
+                clientName: document.getElementById('clientName').value,
+                clientEmail: document.getElementById('clientEmail').value,
+                clientAddress: document.getElementById('clientAddress').value,
+                date: document.getElementById('invoiceDate').value,
+                dueDate: document.getElementById('dueDate').value,
+                items,
+                subtotal,
+                tax,
+                total,
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+
+            appData.invoices.push(invoice);
+            saveData();
+            updateDashboard();
+            updateAllTables();
+
+            bootstrap.Modal.getInstance(document.getElementById('createInvoiceModal')).hide();
+            form.reset();
+            
+            // Reset invoice items to single item
+            document.getElementById('invoiceItems').innerHTML = `
+                <div class="row invoice-item mb-2">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" placeholder="Description" name="description" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" placeholder="Qty" name="quantity" value="1" min="1" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="number" class="form-control" placeholder="Rate" name="rate" step="0.01" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" placeholder="Amount" name="amount" readonly>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeInvoiceItem(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            alert('Invoice created successfully!');
+        }
+
+        // Subscription Management
+        function showCreateSubscriptionModal() {
+            document.getElementById('startDate').value = new Date().toISOString().split('T')[0];
+            new bootstrap.Modal(document.getElementById('createSubscriptionModal')).show();
+        }
+
+        function createSubscription() {
+            const form = document.getElementById('subscriptionForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const subscription = {
+                id: Date.now(),
+                planName: document.getElementById('planName').value,
+                clientName: document.getElementById('subClientName').value,
+                clientEmail: document.getElementById('subClientEmail').value,
+                amount: parseFloat(document.getElementById('subAmount').value),
+                billingCycle: document.getElementById('billingCycle').value,
+                startDate: document.getElementById('startDate').value,
+                nextBilling: calculateNextBilling(document.getElementById('startDate').value, document.getElementById('billingCycle').value),
+                status: 'active',
+                createdAt: new Date().toISOString()
+            };
+
+            appData.subscriptions.push(subscription);
+            saveData();
+            updateDashboard();
+            updateAllTables();
+
+            bootstrap.Modal.getInstance(document.getElementById('createSubscriptionModal')).hide();
+            form.reset();
+            
+            alert('Subscription created successfully!');
+        }
+
+        function calculateNextBilling(startDate, cycle) {
+            const date = new Date(startDate);
+            switch (cycle) {
+                case 'monthly':
+                    date.setMonth(date.getMonth() + 1);
+                    break;
+                case 'quarterly':
+                    date.setMonth(date.getMonth() + 3);
+                    break;
+                case 'yearly':
+                    date.setFullYear(date.getFullYear() + 1);
+                    break;
+            }
+            return date.toISOString().split('T')[0];
+        }
+
+        // Table Updates
+        function updateAllTables() {
+            updateInvoicesTable();
+            updateSubscriptionsTable();
+        }
+
+        function updateInvoicesTable() {
+            const tbody = document.getElementById('invoicesTable');
+            
+            if (appData.invoices.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No invoices created yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = appData.invoices.map(invoice => `
+                <tr>
+                    <td>${invoice.number}</td>
+                    <td>${invoice.clientName}</td>
+                    <td>$${invoice.total.toFixed(2)}</td>
+                    <td><span class="badge bg-${getStatusColor(invoice.status)}">${invoice.status}</span></td>
+                    <td>${new Date(invoice.date).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="viewInvoice(${invoice.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success me-1" onclick="markAsPaid(${invoice.id})" ${invoice.status === 'paid' ? 'disabled' : ''}>
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteInvoice(${invoice.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateSubscriptionsTable() {
+            const tbody = document.getElementById('subscriptionsTable');
+            
+            if (appData.subscriptions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No subscriptions created yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = appData.subscriptions.map(sub => `
+                <tr>
+                    <td>${sub.planName}</td>
+                    <td>${sub.clientName}</td>
+                    <td>$${sub.amount.toFixed(2)}</td>
+                    <td>${sub.billingCycle}</td>
+                    <td><span class="badge bg-${getStatusColor(sub.status)}">${sub.status}</span></td>
+                    <td>${new Date(sub.nextBilling).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-warning me-1" onclick="toggleSubscription(${sub.id})">
+                            <i class="fas fa-${sub.status === 'active' ? 'pause' : 'play'}"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteSubscription(${sub.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Utility Functions
+        function getStatusColor(status) {
+            switch (status) {
+                case 'paid': return 'success';
+                case 'pending': return 'warning';
+                case 'overdue': return 'danger';
+                case 'active': return 'success';
+                case 'paused': return 'secondary';
+                default: return 'secondary';
+            }
+        }
+
+        function markAsPaid(invoiceId) {
+            const invoice = appData.invoices.find(inv => inv.id === invoiceId);
+            if (invoice) {
+                invoice.status = 'paid';
+                saveData();
+                updateDashboard();
+                updateAllTables();
+            }
+        }
+
+        function deleteInvoice(invoiceId) {
+            if (confirm('Are you sure you want to delete this invoice?')) {
+                appData.invoices = appData.invoices.filter(inv => inv.id !== invoiceId);
+                saveData();
+                updateDashboard();
+                updateAllTables();
+            }
+        }
+
+        function toggleSubscription(subId) {
+            const subscription = appData.subscriptions.find(sub => sub.id === subId);
+            if (subscription) {
+                subscription.status = subscription.status === 'active' ? 'paused' : 'active';
+                saveData();
+                updateDashboard();
+                updateAllTables();
+            }
+        }
+
+        function deleteSubscription(subId) {
+            if (confirm('Are you sure you want to delete this subscription?')) {
+                appData.subscriptions = appData.subscriptions.filter(sub => sub.id !== subId);
+                saveData();
+                updateDashboard();
+                updateAllTables();
+            }
+        }
+
+        function viewInvoice(invoiceId) {
+            const invoice = appData.invoices.find(inv => inv.id === invoiceId);
+            if (!invoice) return;
+
+            const content = `
+                <div class="invoice-preview">
+                    <div class="company-header">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3>${appData.settings.companyName}</h3>
+                                <p class="mb-0">${appData.settings.companyAddress}</p>
+                                <p class="mb-0">${appData.settings.companyEmail}</p>
+                                <p class="mb-0">${appData.settings.companyPhone}</p>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <h2>INVOICE</h2>
+                                <p class="mb-1"><strong>Invoice #:</strong> ${invoice.number}</p>
+                                <p class="mb-1"><strong>Date:</strong> ${new Date(invoice.date).toLocaleDateString()}</p>
+                                <p class="mb-0"><strong>Due Date:</strong> ${new Date(invoice.dueDate).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Bill To:</h5>
+                            <p class="mb-1"><strong>${invoice.clientName}</strong></p>
+                            <p class="mb-1">${invoice.clientEmail}</p>
+                            <p class="mb-0">${invoice.clientAddress}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="invoice-table">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Qty</th>
+                                    <th>Rate</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${invoice.items.map(item => `
+                                    <tr>
+                                        <td>${item.description}</td>
+                                        <td>${item.quantity}</td>
+                                        <td>$${item.rate.toFixed(2)}</td>
+                                        <td>$${item.amount.toFixed(2)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-8"></div>
+                        <div class="col-md-4">
+                            <div class="invoice-total">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Subtotal:</span>
+                                    <span>$${invoice.subtotal.toFixed(2)}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Tax (${appData.settings.taxRate}%):</span>
+                                    <span>$${invoice.tax.toFixed(2)}</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <strong>Total:</strong>
+                                    <strong>$${invoice.total.toFixed(2)}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('invoicePreviewContent').innerHTML = content;
+            new bootstrap.Modal(document.getElementById('invoicePreviewModal')).show();
+        }
+
+        function printInvoice() {
+            const content = document.getElementById('invoicePreviewContent').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Invoice</title>
+                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                        <style>
+                            body { padding: 20px; }
+                            .invoice-preview { background: white !important; }
+                        </style>
+                    </head>
+                    <body>${content}</body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Reports
+        function updateReports() {
+            updateReportSummary();
+            updateMonthlyRevenueChart();
+            updateClientRevenueChart();
+        }
+
+        function updateReportSummary() {
+            const totalRevenue = appData.invoices
+                .filter(inv => inv.status === 'paid')
+                .reduce((sum, inv) => sum + inv.total, 0);
+            
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            const monthlyRevenue = appData.invoices
+                .filter(inv => {
+                    const invDate = new Date(inv.date);
+                    return inv.status === 'paid' && 
+                           invDate.getMonth() === currentMonth && 
+                           invDate.getFullYear() === currentYear;
+                })
+                .reduce((sum, inv) => sum + inv.total, 0);
+            
+            const pendingAmount = appData.invoices
+                .filter(inv => inv.status === 'pending')
+                .reduce((sum, inv) => sum + inv.total, 0);
+            
+            const subscriptionRevenue = appData.subscriptions
+                .filter(sub => sub.status === 'active')
+                .reduce((sum, sub) => sum + sub.amount, 0);
+
+            document.getElementById('reportTotalRevenue').textContent = `$${totalRevenue.toFixed(2)}`;
+            document.getElementById('reportMonthlyRevenue').textContent = `$${monthlyRevenue.toFixed(2)}`;
+            document.getElementById('reportPendingAmount').textContent = `$${pendingAmount.toFixed(2)}`;
+            document.getElementById('reportSubscriptionRevenue').textContent = `$${subscriptionRevenue.toFixed(2)}`;
+        }
+
+        function getMonthlyRevenueData() {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const currentYear = new Date().getFullYear();
+            const data = new Array(12).fill(0);
+
+            appData.invoices
+                .filter(inv => inv.status === 'paid' && new Date(inv.date).getFullYear() === currentYear)
+                .forEach(inv => {
+                    const month = new Date(inv.date).getMonth();
+                    data[month] += inv.total;
+                });
+
+            return {
+                labels: months,
+                data: data
+            };
+        }
+
+        function updateMonthlyRevenueChart() {
+            const ctx = document.getElementById('monthlyRevenueChart').getContext('2d');
+            
+            if (window.monthlyChart) {
+                window.monthlyChart.destroy();
+            }
+
+            const monthlyData = getMonthlyRevenueData();
+            
+            window.monthlyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: monthlyData.labels,
+                    datasets: [{
+                        label: 'Revenue',
+                        data: monthlyData.data,
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: '#667eea',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateClientRevenueChart() {
+            const ctx = document.getElementById('clientRevenueChart').getContext('2d');
+            
+            if (window.clientChart) {
+                window.clientChart.destroy();
+            }
+
+            const clientData = {};
+            appData.invoices
+                .filter(inv => inv.status === 'paid')
+                .forEach(inv => {
+                    clientData[inv.clientName] = (clientData[inv.clientName] || 0) + inv.total;
+                });
+
+            const labels = Object.keys(clientData).slice(0, 5); // Top 5 clients
+            const data = labels.map(client => clientData[client]);
+            
+            window.clientChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#667eea',
+                            '#764ba2',
+                            '#f093fb',
+                            '#f5576c',
+                            '#4facfe'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Settings
+        function saveSettings() {
+            appData.settings.companyName = document.getElementById('companyName').value;
+            appData.settings.companyAddress = document.getElementById('companyAddress').value;
+            appData.settings.companyEmail = document.getElementById('companyEmail').value;
+            appData.settings.companyPhone = document.getElementById('companyPhone').value;
+            appData.settings.currency = document.getElementById('defaultCurrency').value;
+            appData.settings.taxRate = parseFloat(document.getElementById('taxRate').value);
+            appData.settings.invoicePrefix = document.getElementById('invoicePrefix').value;
+            
+            saveData();
+            alert('Settings saved successfully!');
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'invoicepro-data.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function resetData() {
+            if (confirm('Are you sure you want to reset all data? This action cannot be undone.')) {
+                localStorage.removeItem('invoiceProData');
+                appData = {
+                    invoices: [],
+                    subscriptions: [],
+                    settings: {
+                        companyName: 'Your Company Name',
+                        companyAddress: '123 Business Street, City, State 12345',
+                        companyEmail: 'contact@yourcompany.com',
+                        companyPhone: '+1 (555) 123-4567',
+                        currency: 'USD',
+                        taxRate: 10,
+                        invoicePrefix: 'INV'
+                    }
+                };
+                updateDashboard();
+                updateAllTables();
+                updateReports();
+                alert('All data has been reset.');
+            }
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            
+            // Attach form listeners
+            document.getElementById('companyForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveSettings();
+            });
+            
+            document.getElementById('businessForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveSettings();
+            });
+            
+            // Attach invoice item calculation listeners
+            document.addEventListener('input', function(e) {
+                if (e.target.name === 'quantity' || e.target.name === 'rate') {
+                    calculateInvoiceTotal();
+                }
+            });
+            
+            // Load settings into form
+            document.getElementById('companyName').value = appData.settings.companyName;
+            document.getElementById('companyAddress').value = appData.settings.companyAddress;
+            document.getElementById('companyEmail').value = appData.settings.companyEmail;
+            document.getElementById('companyPhone').value = appData.settings.companyPhone;
+            document.getElementById('defaultCurrency').value = appData.settings.currency;
+            document.getElementById('taxRate').value = appData.settings.taxRate;
+            document.getElementById('invoicePrefix').value = appData.settings.invoicePrefix;
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98e87f24c233a701',t:'MTc2MDQ1OTc5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
