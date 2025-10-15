@@ -9,40 +9,29 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --info-color: #17a2b8;
+            --primary-gradient: linear-gradient(135deg, #4CAF50 0%, #81C784 100%);
+            --primary-color: #4CAF50;
+            --secondary-color: #81C784;
+            --success-color: #4CAF50;
+            --warning-color: #FFB74D;
+            --danger-color: #E57373;
+            --info-color: #64B5F6;
+            --cream-color: #FFF8E1;
+            --light-blue: #E3F2FD;
+            --light-pink: #FCE4EC;
+            --light-green: #E8F5E8;
             --border-radius: 12px;
-            --box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            --box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        [data-theme="dark"] {
-            --bg-primary: #1a1a1a;
-            --bg-secondary: #2d2d2d;
-            --bg-tertiary: #3d3d3d;
-            --text-primary: #ffffff;
-            --text-secondary: #b0b0b0;
-            --text-muted: #888888;
-            --border-color: #404040;
-            --card-bg: #2d2d2d;
-            --modal-bg: #2d2d2d;
-            --table-bg: #2d2d2d;
-            --input-bg: #3d3d3d;
-        }
-
-        [data-theme="light"] {
+            
+            /* Professional Color Scheme */
             --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --bg-tertiary: #e9ecef;
-            --text-primary: #212529;
-            --text-secondary: #6c757d;
-            --text-muted: #adb5bd;
-            --border-color: #dee2e6;
+            --bg-secondary: #f8fffe;
+            --bg-tertiary: #e8f5e8;
+            --text-primary: #2e3440;
+            --text-secondary: #5e81ac;
+            --text-muted: #81a1c1;
+            --border-color: #e5e9f0;
             --card-bg: #ffffff;
             --modal-bg: #ffffff;
             --table-bg: #ffffff;
@@ -102,20 +91,7 @@
             transform: translateY(-1px);
         }
 
-        .theme-toggle {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            transition: var(--transition);
-            margin-left: 1rem;
-        }
 
-        .theme-toggle:hover {
-            background: rgba(255,255,255,0.3);
-            color: white;
-        }
         
         .card {
             border: none;
@@ -132,11 +108,26 @@
         }
         
         .stat-card {
-            background: var(--primary-gradient);
-            color: white;
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            color: white;
+        }
+
+        .stat-card.revenue-card {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+        }
+
+        .stat-card.invoice-card {
+            background: linear-gradient(135deg, #64B5F6 0%, #90CAF9 100%);
+        }
+
+        .stat-card.subscription-card {
+            background: linear-gradient(135deg, #FFB74D 0%, #FFCC80 100%);
+        }
+
+        .stat-card.pending-card {
+            background: linear-gradient(135deg, #F06292 0%, #F48FB1 100%);
         }
 
         .stat-card::before {
@@ -292,10 +283,31 @@
         .page-section {
             display: none;
             animation: fadeIn 0.3s ease-in-out;
+            min-height: calc(100vh - 80px);
         }
         
         .page-section.active {
             display: block;
+        }
+
+        #dashboard {
+            background: var(--light-green);
+        }
+
+        #invoices {
+            background: var(--light-blue);
+        }
+
+        #subscriptions {
+            background: var(--cream-color);
+        }
+
+        #reports {
+            background: var(--light-pink);
+        }
+
+        #settings {
+            background: var(--bg-secondary);
         }
 
         @keyframes fadeIn {
@@ -423,10 +435,7 @@
                 margin-top: 1rem;
             }
 
-            .theme-toggle {
-                margin-left: 0;
-                margin-top: 0.5rem;
-            }
+
         }
 
         @media (max-width: 576px) {
@@ -484,8 +493,8 @@
                             </a>
                         </li>
                     </ul>
-                    <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
-                        <i class="fas fa-moon"></i>
+                    <button class="btn btn-outline-light btn-sm" onclick="showPage('dashboard')" id="backToDashboard" style="display: none;">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
                     </button>
                 </div>
             </div>
@@ -506,7 +515,7 @@
                 <!-- Stats Cards -->
                 <div class="row mb-4">
                     <div class="col-md-3 mb-3">
-                        <div class="card stat-card" onclick="showRevenueDetails()">
+                        <div class="card stat-card revenue-card" onclick="showRevenueDetails()">
                             <div class="card-body text-center">
                                 <i class="fas fa-dollar-sign stat-icon"></i>
                                 <div class="stat-number" id="totalRevenue">$0.00</div>
@@ -515,7 +524,7 @@
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div class="card stat-card" onclick="showInvoicesPage()">
+                        <div class="card stat-card invoice-card" onclick="showInvoicesPage()">
                             <div class="card-body text-center">
                                 <i class="fas fa-file-invoice stat-icon"></i>
                                 <div class="stat-number" id="totalInvoices">0</div>
@@ -524,7 +533,7 @@
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div class="card stat-card" onclick="showSubscriptionsPage()">
+                        <div class="card stat-card subscription-card" onclick="showSubscriptionsPage()">
                             <div class="card-body text-center">
                                 <i class="fas fa-users stat-icon"></i>
                                 <div class="stat-number" id="activeSubscriptions">0</div>
@@ -533,7 +542,7 @@
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div class="card stat-card" onclick="showPendingInvoices()">
+                        <div class="card stat-card pending-card" onclick="showPendingInvoices()">
                             <div class="card-body text-center">
                                 <i class="fas fa-exclamation-triangle stat-icon"></i>
                                 <div class="stat-number" id="pendingInvoices">0</div>
@@ -1174,33 +1183,7 @@
             }
         }
 
-        // Theme Management
-        function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            
-            const themeIcon = document.querySelector('#themeToggle i');
-            themeIcon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-            
-            // Update charts for theme
-            setTimeout(() => {
-                updateDashboard();
-                updateReports();
-            }, 100);
-        }
-
-        // Load saved theme
-        function loadTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            
-            const themeIcon = document.querySelector('#themeToggle i');
-            themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-        }
+        // Professional theme is always active - no theme switching needed
 
         // Toast notifications
         function showToast(message, type = 'success') {
@@ -1250,6 +1233,14 @@
             });
             document.getElementById(`nav-${pageId}`).classList.add('active');
 
+            // Show/hide back to dashboard button
+            const backButton = document.getElementById('backToDashboard');
+            if (pageId === 'dashboard') {
+                backButton.style.display = 'none';
+            } else {
+                backButton.style.display = 'inline-block';
+            }
+
             // Update page-specific content
             if (pageId === 'reports') {
                 setTimeout(updateReports, 100);
@@ -1257,6 +1248,8 @@
                 updateInvoicesTable();
             } else if (pageId === 'subscriptions') {
                 updateSubscriptionsTable();
+            } else if (pageId === 'dashboard') {
+                setTimeout(updateDashboard, 100);
             }
         }
 
@@ -1380,6 +1373,22 @@
 
             const monthlyData = getMonthlyRevenueData();
             
+            // Check if we have data
+            if (monthlyData.data.every(val => val === 0)) {
+                // Show empty state
+                const container = ctx.parentElement;
+                container.innerHTML = `
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <div class="text-center text-muted">
+                            <i class="fas fa-chart-line fa-3x mb-3" style="opacity: 0.3;"></i>
+                            <p>No revenue data yet</p>
+                            <small>Create and mark invoices as paid to see trends</small>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
             charts.dashboard = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -1387,11 +1396,11 @@
                     datasets: [{
                         label: 'Revenue',
                         data: monthlyData.data,
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderColor: '#4CAF50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
                         tension: 0.4,
                         fill: true,
-                        pointBackgroundColor: '#667eea',
+                        pointBackgroundColor: '#4CAF50',
                         pointBorderColor: '#ffffff',
                         pointBorderWidth: 2,
                         pointRadius: 4
@@ -2076,6 +2085,22 @@
 
             const monthlyData = getMonthlyRevenueData();
             
+            // Check if we have data
+            if (monthlyData.data.every(val => val === 0)) {
+                // Show empty state
+                const container = ctx.parentElement;
+                container.innerHTML = `
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <div class="text-center text-muted">
+                            <i class="fas fa-chart-bar fa-3x mb-3" style="opacity: 0.3;"></i>
+                            <p>No monthly revenue data</p>
+                            <small>Create and mark invoices as paid to see monthly trends</small>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
             charts.monthly = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -2083,8 +2108,8 @@
                     datasets: [{
                         label: 'Revenue',
                         data: monthlyData.data,
-                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
-                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(100, 181, 246, 0.8)',
+                        borderColor: '#64B5F6',
                         borderWidth: 1,
                         borderRadius: 4
                     }]
@@ -2135,7 +2160,16 @@
             
             if (labels.length === 0) {
                 // Show empty state
-                ctx.getContext('2d').clearRect(0, 0, ctx.width, ctx.height);
+                const container = ctx.parentElement;
+                container.innerHTML = `
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <div class="text-center text-muted">
+                            <i class="fas fa-chart-pie fa-3x mb-3" style="opacity: 0.3;"></i>
+                            <p>No client revenue data</p>
+                            <small>Create and mark invoices as paid to see client breakdown</small>
+                        </div>
+                    </div>
+                `;
                 return;
             }
             
@@ -2146,11 +2180,11 @@
                     datasets: [{
                         data: data,
                         backgroundColor: [
-                            '#667eea',
-                            '#764ba2',
-                            '#f093fb',
-                            '#f5576c',
-                            '#4facfe'
+                            '#4CAF50',
+                            '#64B5F6',
+                            '#FFB74D',
+                            '#F06292',
+                            '#9C27B0'
                         ],
                         borderWidth: 2,
                         borderColor: '#ffffff'
@@ -2227,12 +2261,41 @@
 
         function saveSettings() {
             try {
-                appData.settings.companyName = document.getElementById('companyName').value.trim();
+                // Validate required fields
+                const companyName = document.getElementById('companyName').value.trim();
+                const companyEmail = document.getElementById('companyEmail').value.trim();
+                
+                if (!companyName) {
+                    showToast('Company name is required', 'error');
+                    return;
+                }
+                
+                if (!companyEmail) {
+                    showToast('Company email is required', 'error');
+                    return;
+                }
+                
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(companyEmail)) {
+                    showToast('Please enter a valid email address', 'error');
+                    return;
+                }
+                
+                // Tax rate validation
+                const taxRate = parseFloat(document.getElementById('taxRate').value);
+                if (isNaN(taxRate) || taxRate < 0 || taxRate > 100) {
+                    showToast('Tax rate must be between 0 and 100', 'error');
+                    return;
+                }
+                
+                // Save settings
+                appData.settings.companyName = companyName;
                 appData.settings.companyAddress = document.getElementById('companyAddress').value.trim();
-                appData.settings.companyEmail = document.getElementById('companyEmail').value.trim();
+                appData.settings.companyEmail = companyEmail;
                 appData.settings.companyPhone = document.getElementById('companyPhone').value.trim();
                 appData.settings.currency = document.getElementById('defaultCurrency').value;
-                appData.settings.taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+                appData.settings.taxRate = taxRate;
                 appData.settings.invoicePrefix = document.getElementById('invoicePrefix').value.trim() || 'INV';
                 appData.settings.dateFormat = document.getElementById('dateFormat').value;
                 
@@ -2245,7 +2308,7 @@
                 showToast('Settings saved successfully!', 'success');
             } catch (error) {
                 console.error('Error saving settings:', error);
-                showToast('Error saving settings', 'error');
+                showToast('Failed to save settings. Please try again.', 'error');
             }
         }
 
@@ -2346,7 +2409,6 @@
         // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
             try {
-                loadTheme();
                 loadData();
                 
                 // Attach form listeners
@@ -2399,5 +2461,5 @@
             });
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98ee0a9632101c61',t:'MTc2MDUxNzkzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98ee2c676265a7e8',t:'MTc2MDUxOTMyMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
