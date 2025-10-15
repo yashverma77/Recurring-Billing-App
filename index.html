@@ -1,18 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InvoicePro - Micro-SaaS Billing Platform</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>InvoicePro - Professional Billing Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
     <style>
-        body {
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --bg-tertiary: #3d3d3d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-muted: #888888;
+            --border-color: #404040;
+            --card-bg: #2d2d2d;
+            --modal-bg: #2d2d2d;
+            --table-bg: #2d2d2d;
+            --input-bg: #3d3d3d;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --text-muted: #adb5bd;
+            --border-color: #dee2e6;
+            --card-bg: #ffffff;
+            --modal-bg: #ffffff;
+            --table-bg: #ffffff;
+            --input-bg: #ffffff;
+        }
+
+        * {
             box-sizing: border-box;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: var(--transition);
             min-height: 100%;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         
         html, body {
@@ -20,132 +68,257 @@
         }
         
         .main-container {
-            background: white;
+            background: var(--bg-primary);
             min-height: 100%;
-            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
         }
         
         .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: var(--primary-gradient) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 1rem 0;
         }
         
         .navbar-brand {
             font-weight: 700;
-            font-size: 1.5rem;
+            font-size: 1.75rem;
+            color: white !important;
         }
         
         .nav-link {
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            color: rgba(255,255,255,0.9) !important;
+            border-radius: 8px;
+            margin: 0 4px;
+            padding: 8px 16px !important;
         }
         
-        .nav-link:hover {
-            transform: translateY(-2px);
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white !important;
+            transform: translateY(-1px);
+        }
+
+        .theme-toggle {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: var(--transition);
+            margin-left: 1rem;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
         }
         
         .card {
             border: none;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
         }
         
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
         }
         
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
             color: white;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
         }
         
         .stat-card .card-body {
             padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
         
         .stat-number {
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-description {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            opacity: 0.3;
         }
         
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
+        .btn {
             border-radius: 10px;
-            padding: 0.75rem 1.5rem;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: translateY(-2px);
         }
         
         .table {
-            border-radius: 10px;
+            border-radius: var(--border-radius);
             overflow: hidden;
+            background: var(--table-bg);
+            color: var(--text-primary);
         }
         
         .table thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
             color: white;
+        }
+
+        .table tbody tr {
+            transition: var(--transition);
+        }
+
+        .table tbody tr:hover {
+            background: var(--bg-secondary);
         }
         
         .badge {
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-weight: 500;
+            font-size: 0.8rem;
         }
+
+        .badge.bg-success { background: var(--success-color) !important; }
+        .badge.bg-warning { background: var(--warning-color) !important; color: #000 !important; }
+        .badge.bg-danger { background: var(--danger-color) !important; }
+        .badge.bg-secondary { background: var(--text-secondary) !important; }
         
         .modal-content {
-            border-radius: 15px;
+            border-radius: var(--border-radius);
             border: none;
+            background: var(--modal-bg);
+            color: var(--text-primary);
         }
         
         .modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
             color: white;
-            border-radius: 15px 15px 0 0;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            border-bottom: none;
+        }
+
+        .modal-body {
+            background: var(--modal-bg);
+        }
+
+        .modal-footer {
+            background: var(--modal-bg);
+            border-top: 1px solid var(--border-color);
         }
         
         .form-control, .form-select {
             border-radius: 10px;
-            border: 2px solid #e9ecef;
-            transition: all 0.3s ease;
+            border: 2px solid var(--border-color);
+            transition: var(--transition);
+            background: var(--input-bg);
+            color: var(--text-primary);
         }
         
         .form-control:focus, .form-select:focus {
-            border-color: #667eea;
+            border-color: var(--primary-color);
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        .form-label {
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
         }
         
         .page-section {
             display: none;
+            animation: fadeIn 0.3s ease-in-out;
         }
         
         .page-section.active {
             display: block;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         
         .chart-container {
             position: relative;
-            height: 300px;
+            height: 350px;
             margin: 20px 0;
         }
         
         .invoice-preview {
-            background: #f8f9fa;
-            border-radius: 10px;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
             padding: 2rem;
             margin-top: 1rem;
+            border: 1px solid var(--border-color);
         }
         
         .company-header {
-            border-bottom: 3px solid #667eea;
+            border-bottom: 3px solid var(--primary-color);
             padding-bottom: 1rem;
             margin-bottom: 2rem;
         }
@@ -155,11 +328,80 @@
         }
         
         .invoice-total {
-            background: #667eea;
+            background: var(--primary-gradient);
             color: white;
-            padding: 1rem;
-            border-radius: 10px;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
             text-align: right;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .currency-symbol {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .filter-controls {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            background: var(--card-bg);
+            color: var(--text-primary);
         }
         
         @media (max-width: 768px) {
@@ -168,12 +410,44 @@
             }
             
             .card-body {
-                padding: 1rem;
+                padding: 1.5rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .navbar-nav {
+                margin-top: 1rem;
+            }
+
+            .theme-toggle {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .stat-card .card-body {
+                padding: 1.5rem;
+            }
+
+            .stat-number {
+                font-size: 1.75rem;
+            }
+
+            .chart-container {
+                height: 250px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
     <div class="main-container">
         <!-- Navigation -->
         <nav class="navbar navbar-expand-lg navbar-dark">
@@ -185,31 +459,34 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#" onclick="showPage('dashboard')">
+                            <a class="nav-link active" href="#" onclick="showPage('dashboard')" id="nav-dashboard">
                                 <i class="fas fa-tachometer-alt me-1"></i>Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="showPage('invoices')">
+                            <a class="nav-link" href="#" onclick="showPage('invoices')" id="nav-invoices">
                                 <i class="fas fa-file-invoice me-1"></i>Invoices
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="showPage('subscriptions')">
+                            <a class="nav-link" href="#" onclick="showPage('subscriptions')" id="nav-subscriptions">
                                 <i class="fas fa-sync-alt me-1"></i>Subscriptions
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="showPage('reports')">
+                            <a class="nav-link" href="#" onclick="showPage('reports')" id="nav-reports">
                                 <i class="fas fa-chart-bar me-1"></i>Reports
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="showPage('settings')">
+                            <a class="nav-link" href="#" onclick="showPage('settings')" id="nav-settings">
                                 <i class="fas fa-cog me-1"></i>Settings
                             </a>
                         </li>
                     </ul>
+                    <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
                 </div>
             </div>
         </nav>
@@ -217,47 +494,50 @@
         <!-- Dashboard Section -->
         <div id="dashboard" class="page-section active">
             <div class="container-fluid p-4">
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <h2 class="mb-4"><i class="fas fa-tachometer-alt me-2"></i>Dashboard Overview</h2>
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-tachometer-alt me-2"></i>Dashboard Overview</h2>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-primary btn-sm" onclick="refreshDashboard()">
+                            <i class="fas fa-sync-alt me-1"></i>Refresh
+                        </button>
                     </div>
                 </div>
                 
                 <!-- Stats Cards -->
                 <div class="row mb-4">
                     <div class="col-md-3 mb-3">
-                        <div class="card stat-card">
+                        <div class="card stat-card" onclick="showRevenueDetails()">
                             <div class="card-body text-center">
-                                <i class="fas fa-dollar-sign fa-2x mb-3"></i>
-                                <div class="stat-number" id="totalRevenue">$0</div>
-                                <div>Total Revenue</div>
+                                <i class="fas fa-dollar-sign stat-icon"></i>
+                                <div class="stat-number" id="totalRevenue">$0.00</div>
+                                <div class="stat-description">Total Revenue</div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div class="card stat-card">
+                        <div class="card stat-card" onclick="showInvoicesPage()">
                             <div class="card-body text-center">
-                                <i class="fas fa-file-invoice fa-2x mb-3"></i>
+                                <i class="fas fa-file-invoice stat-icon"></i>
                                 <div class="stat-number" id="totalInvoices">0</div>
-                                <div>Total Invoices</div>
+                                <div class="stat-description">Total Invoices</div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div class="card stat-card">
+                        <div class="card stat-card" onclick="showSubscriptionsPage()">
                             <div class="card-body text-center">
-                                <i class="fas fa-users fa-2x mb-3"></i>
+                                <i class="fas fa-users stat-icon"></i>
                                 <div class="stat-number" id="activeSubscriptions">0</div>
-                                <div>Active Subscriptions</div>
+                                <div class="stat-description">Active Subscriptions</div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div class="card stat-card">
+                        <div class="card stat-card" onclick="showPendingInvoices()">
                             <div class="card-body text-center">
-                                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                                <i class="fas fa-exclamation-triangle stat-icon"></i>
                                 <div class="stat-number" id="pendingInvoices">0</div>
-                                <div>Pending Invoices</div>
+                                <div class="stat-description">Pending Invoices</div>
                             </div>
                         </div>
                     </div>
@@ -268,16 +548,21 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title mb-3">Quick Actions</h5>
-                                <button class="btn btn-primary me-2 mb-2" onclick="showCreateInvoiceModal()">
-                                    <i class="fas fa-plus me-1"></i>New Invoice
-                                </button>
-                                <button class="btn btn-primary me-2 mb-2" onclick="showCreateSubscriptionModal()">
-                                    <i class="fas fa-sync-alt me-1"></i>New Subscription
-                                </button>
-                                <button class="btn btn-outline-primary me-2 mb-2" onclick="showPage('reports')">
-                                    <i class="fas fa-chart-line me-1"></i>View Reports
-                                </button>
+                                <h5 class="card-title mb-3"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button class="btn btn-primary" onclick="showCreateInvoiceModal()">
+                                        <i class="fas fa-plus me-1"></i>New Invoice
+                                    </button>
+                                    <button class="btn btn-primary" onclick="showCreateSubscriptionModal()">
+                                        <i class="fas fa-sync-alt me-1"></i>New Subscription
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="showPage('reports')">
+                                        <i class="fas fa-chart-line me-1"></i>View Reports
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="exportData()">
+                                        <i class="fas fa-download me-1"></i>Export Data
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -288,7 +573,7 @@
                     <div class="col-md-8">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Recent Invoices</h5>
+                                <h5 class="card-title"><i class="fas fa-clock me-2"></i>Recent Invoices</h5>
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead>
@@ -302,7 +587,12 @@
                                         </thead>
                                         <tbody id="recentInvoicesTable">
                                             <tr>
-                                                <td colspan="5" class="text-center text-muted">No invoices yet</td>
+                                                <td colspan="5" class="text-center text-muted">
+                                                    <div class="empty-state">
+                                                        <i class="fas fa-file-invoice"></i>
+                                                        <p>No invoices yet. Create your first invoice!</p>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -313,7 +603,7 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Revenue Chart</h5>
+                                <h5 class="card-title"><i class="fas fa-chart-line me-2"></i>Revenue Trend</h5>
                                 <div class="chart-container">
                                     <canvas id="revenueChart"></canvas>
                                 </div>
@@ -327,14 +617,35 @@
         <!-- Invoices Section -->
         <div id="invoices" class="page-section">
             <div class="container-fluid p-4">
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <h2><i class="fas fa-file-invoice me-2"></i>Invoice Management</h2>
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <button class="btn btn-primary" onclick="showCreateInvoiceModal()">
-                            <i class="fas fa-plus me-1"></i>Create Invoice
-                        </button>
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-file-invoice me-2"></i>Invoice Management</h2>
+                    <button class="btn btn-primary" onclick="showCreateInvoiceModal()">
+                        <i class="fas fa-plus me-1"></i>Create Invoice
+                    </button>
+                </div>
+
+                <!-- Filter Controls -->
+                <div class="filter-controls">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <select class="form-select" id="invoiceStatusFilter" onchange="filterInvoices()">
+                                <option value="">All Statuses</option>
+                                <option value="pending">Pending</option>
+                                <option value="paid">Paid</option>
+                                <option value="overdue">Overdue</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" id="invoiceSearchFilter" placeholder="Search client..." onkeyup="filterInvoices()">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="date" class="form-control" id="invoiceDateFilter" onchange="filterInvoices()">
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-outline-primary w-100" onclick="clearInvoiceFilters()">
+                                <i class="fas fa-times me-1"></i>Clear Filters
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -349,12 +660,21 @@
                                         <th>Amount</th>
                                         <th>Status</th>
                                         <th>Date</th>
+                                        <th>Due Date</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="invoicesTable">
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted">No invoices created yet</td>
+                                        <td colspan="7" class="text-center">
+                                            <div class="empty-state">
+                                                <i class="fas fa-file-invoice"></i>
+                                                <p>No invoices created yet</p>
+                                                <button class="btn btn-primary" onclick="showCreateInvoiceModal()">
+                                                    Create Your First Invoice
+                                                </button>
+                                            </div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -367,15 +687,11 @@
         <!-- Subscriptions Section -->
         <div id="subscriptions" class="page-section">
             <div class="container-fluid p-4">
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <h2><i class="fas fa-sync-alt me-2"></i>Subscription Management</h2>
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <button class="btn btn-primary" onclick="showCreateSubscriptionModal()">
-                            <i class="fas fa-plus me-1"></i>Create Subscription
-                        </button>
-                    </div>
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-sync-alt me-2"></i>Subscription Management</h2>
+                    <button class="btn btn-primary" onclick="showCreateSubscriptionModal()">
+                        <i class="fas fa-plus me-1"></i>Create Subscription
+                    </button>
                 </div>
 
                 <div class="card">
@@ -395,7 +711,15 @@
                                 </thead>
                                 <tbody id="subscriptionsTable">
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted">No subscriptions created yet</td>
+                                        <td colspan="7" class="text-center">
+                                            <div class="empty-state">
+                                                <i class="fas fa-sync-alt"></i>
+                                                <p>No subscriptions created yet</p>
+                                                <button class="btn btn-primary" onclick="showCreateSubscriptionModal()">
+                                                    Create Your First Subscription
+                                                </button>
+                                            </div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -408,12 +732,52 @@
         <!-- Reports Section -->
         <div id="reports" class="page-section">
             <div class="container-fluid p-4">
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <h2><i class="fas fa-chart-bar me-2"></i>Reports & Analytics</h2>
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-chart-bar me-2"></i>Reports & Analytics</h2>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-primary" onclick="exportReports()">
+                            <i class="fas fa-download me-1"></i>Export Reports
+                        </button>
                     </div>
                 </div>
 
+                <!-- Summary Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h4 class="text-success" id="reportTotalRevenue">$0.00</h4>
+                                <p class="text-muted mb-0">Total Revenue</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h4 class="text-primary" id="reportMonthlyRevenue">$0.00</h4>
+                                <p class="text-muted mb-0">This Month</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h4 class="text-warning" id="reportPendingAmount">$0.00</h4>
+                                <p class="text-muted mb-0">Pending Amount</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h4 class="text-info" id="reportSubscriptionRevenue">$0.00</h4>
+                                <p class="text-muted mb-0">Monthly Recurring</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <div class="card">
@@ -436,51 +800,21 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Financial Summary</h5>
-                                <div class="row">
-                                    <div class="col-md-3 text-center">
-                                        <h4 class="text-success" id="reportTotalRevenue">$0</h4>
-                                        <p class="text-muted">Total Revenue</p>
-                                    </div>
-                                    <div class="col-md-3 text-center">
-                                        <h4 class="text-primary" id="reportMonthlyRevenue">$0</h4>
-                                        <p class="text-muted">This Month</p>
-                                    </div>
-                                    <div class="col-md-3 text-center">
-                                        <h4 class="text-warning" id="reportPendingAmount">$0</h4>
-                                        <p class="text-muted">Pending Amount</p>
-                                    </div>
-                                    <div class="col-md-3 text-center">
-                                        <h4 class="text-info" id="reportSubscriptionRevenue">$0</h4>
-                                        <p class="text-muted">Subscription Revenue</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
         <!-- Settings Section -->
         <div id="settings" class="page-section">
             <div class="container-fluid p-4">
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <h2><i class="fas fa-cog me-2"></i>Settings</h2>
-                    </div>
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-cog me-2"></i>Settings</h2>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Company Information</h5>
+                                <h5 class="card-title"><i class="fas fa-building me-2"></i>Company Information</h5>
                                 <form id="companyForm">
                                     <div class="mb-3">
                                         <label class="form-label">Company Name</label>
@@ -498,7 +832,9 @@
                                         <label class="form-label">Phone</label>
                                         <input type="tel" class="form-control" id="companyPhone" value="+1 (555) 123-4567">
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i>Save Changes
+                                    </button>
                                 </form>
                             </div>
                         </div>
@@ -506,7 +842,7 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Business Settings</h5>
+                                <h5 class="card-title"><i class="fas fa-cogs me-2"></i>Business Settings</h5>
                                 <form id="businessForm">
                                     <div class="mb-3">
                                         <label class="form-label">Default Currency</label>
@@ -515,31 +851,48 @@
                                             <option value="EUR">EUR (€)</option>
                                             <option value="GBP">GBP (£)</option>
                                             <option value="INR">INR (₹)</option>
+                                            <option value="CAD">CAD (C$)</option>
+                                            <option value="AUD">AUD (A$)</option>
                                         </select>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Tax Rate (%)</label>
-                                        <input type="number" class="form-control" id="taxRate" value="10" step="0.01">
+                                        <input type="number" class="form-control" id="taxRate" value="10" step="0.01" min="0" max="100">
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Invoice Prefix</label>
                                         <input type="text" class="form-control" id="invoicePrefix" value="INV">
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                                    <div class="mb-3">
+                                        <label class="form-label">Date Format</label>
+                                        <select class="form-select" id="dateFormat">
+                                            <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                            <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                            <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i>Save Settings
+                                    </button>
                                 </form>
                             </div>
                         </div>
 
                         <div class="card mt-4">
                             <div class="card-body">
-                                <h5 class="card-title">Data Management</h5>
+                                <h5 class="card-title"><i class="fas fa-database me-2"></i>Data Management</h5>
                                 <p class="text-muted">Export your data or reset the application</p>
-                                <button class="btn btn-outline-primary me-2" onclick="exportData()">
-                                    <i class="fas fa-download me-1"></i>Export Data
-                                </button>
-                                <button class="btn btn-outline-danger" onclick="resetData()">
-                                    <i class="fas fa-trash me-1"></i>Reset All Data
-                                </button>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button class="btn btn-outline-primary" onclick="exportData()">
+                                        <i class="fas fa-download me-1"></i>Export Data
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="importData()">
+                                        <i class="fas fa-upload me-1"></i>Import Data
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="resetData()">
+                                        <i class="fas fa-trash me-1"></i>Reset All Data
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -553,7 +906,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Create New Invoice</h5>
+                    <h5 class="modal-title"><i class="fas fa-plus me-2"></i>Create New Invoice</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -561,73 +914,88 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Client Name</label>
+                                    <label class="form-label">Client Name *</label>
                                     <input type="text" class="form-control" id="clientName" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Client Email</label>
+                                    <label class="form-label">Client Email *</label>
                                     <input type="email" class="form-control" id="clientEmail" required>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Client Address</label>
-                            <textarea class="form-control" id="clientAddress" rows="2"></textarea>
+                            <textarea class="form-control" id="clientAddress" rows="2" placeholder="Enter client address"></textarea>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Invoice Date</label>
+                                    <label class="form-label">Invoice Date *</label>
                                     <input type="date" class="form-control" id="invoiceDate" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Due Date</label>
+                                    <label class="form-label">Due Date *</label>
                                     <input type="date" class="form-control" id="dueDate" required>
                                 </div>
                             </div>
                         </div>
                         
-                        <h6 class="mb-3">Invoice Items</h6>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0"><i class="fas fa-list me-2"></i>Invoice Items</h6>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="addInvoiceItem()">
+                                <i class="fas fa-plus me-1"></i>Add Item
+                            </button>
+                        </div>
+                        
                         <div id="invoiceItems">
-                            <div class="row invoice-item mb-2">
+                            <div class="row invoice-item mb-2 align-items-end">
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control" placeholder="Description" name="description" required>
+                                    <label class="form-label">Description</label>
+                                    <input type="text" class="form-control" placeholder="Item description" name="description" required>
                                 </div>
                                 <div class="col-md-2">
-                                    <input type="number" class="form-control" placeholder="Qty" name="quantity" value="1" min="1" required>
+                                    <label class="form-label">Qty</label>
+                                    <input type="number" class="form-control" placeholder="1" name="quantity" value="1" min="1" required>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="number" class="form-control" placeholder="Rate" name="rate" step="0.01" required>
+                                    <label class="form-label">Rate</label>
+                                    <input type="number" class="form-control" placeholder="0.00" name="rate" step="0.01" min="0" required>
                                 </div>
                                 <div class="col-md-2">
-                                    <input type="text" class="form-control" placeholder="Amount" name="amount" readonly>
+                                    <label class="form-label">Amount</label>
+                                    <input type="text" class="form-control" placeholder="0.00" name="amount" readonly>
                                 </div>
                                 <div class="col-md-1">
-                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeInvoiceItem(this)">
+                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeInvoiceItem(this)" title="Remove item">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-outline-primary btn-sm mb-3" onclick="addInvoiceItem()">
-                            <i class="fas fa-plus me-1"></i>Add Item
-                        </button>
                         
-                        <div class="row">
+                        <div class="row mt-4">
                             <div class="col-md-8"></div>
                             <div class="col-md-4">
-                                <div class="mb-2">
-                                    <strong>Subtotal: $<span id="invoiceSubtotal">0.00</span></strong>
-                                </div>
-                                <div class="mb-2">
-                                    Tax (<span id="invoiceTaxRate">10</span>%): $<span id="invoiceTax">0.00</span>
-                                </div>
-                                <div class="mb-3">
-                                    <strong>Total: $<span id="invoiceTotal">0.00</span></strong>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Subtotal:</span>
+                                            <span><span id="currencySymbol">$</span><span id="invoiceSubtotal">0.00</span></span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Tax (<span id="invoiceTaxRate">10</span>%):</span>
+                                            <span><span id="currencySymbolTax">$</span><span id="invoiceTax">0.00</span></span>
+                                        </div>
+                                        <hr>
+                                        <div class="d-flex justify-content-between">
+                                            <strong>Total:</strong>
+                                            <strong><span id="currencySymbolTotal">$</span><span id="invoiceTotal">0.00</span></strong>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -635,7 +1003,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="createInvoice()">Create Invoice</button>
+                    <button type="button" class="btn btn-primary" onclick="createInvoice()">
+                        <i class="fas fa-save me-1"></i>Create Invoice
+                    </button>
                 </div>
             </div>
         </div>
@@ -646,50 +1016,59 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Create New Subscription</h5>
+                    <h5 class="modal-title"><i class="fas fa-plus me-2"></i>Create New Subscription</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="subscriptionForm">
                         <div class="mb-3">
-                            <label class="form-label">Plan Name</label>
-                            <input type="text" class="form-control" id="planName" required>
+                            <label class="form-label">Plan Name *</label>
+                            <input type="text" class="form-control" id="planName" placeholder="e.g., Basic Plan, Premium Plan" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Client Name</label>
+                            <label class="form-label">Client Name *</label>
                             <input type="text" class="form-control" id="subClientName" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Client Email</label>
+                            <label class="form-label">Client Email *</label>
                             <input type="email" class="form-control" id="subClientEmail" required>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Amount</label>
-                                    <input type="number" class="form-control" id="subAmount" step="0.01" required>
+                                    <label class="form-label">Amount *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="subCurrencySymbol">$</span>
+                                        <input type="number" class="form-control" id="subAmount" step="0.01" min="0" required>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Billing Cycle</label>
+                                    <label class="form-label">Billing Cycle *</label>
                                     <select class="form-select" id="billingCycle" required>
                                         <option value="monthly">Monthly</option>
-                                        <option value="quarterly">Quarterly</option>
+                                        <option value="quarterly">Quarterly (3 months)</option>
                                         <option value="yearly">Yearly</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Start Date</label>
+                            <label class="form-label">Start Date *</label>
                             <input type="date" class="form-control" id="startDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" id="subDescription" rows="2" placeholder="Optional description of the subscription"></textarea>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="createSubscription()">Create Subscription</button>
+                    <button type="button" class="btn btn-primary" onclick="createSubscription()">
+                        <i class="fas fa-save me-1"></i>Create Subscription
+                    </button>
                 </div>
             </div>
         </div>
@@ -700,7 +1079,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Invoice Preview</h5>
+                    <h5 class="modal-title"><i class="fas fa-eye me-2"></i>Invoice Preview</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -709,14 +1088,17 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" onclick="printInvoice()">
-                        <i class="fas fa-print me-1"></i>Print
+                        <i class="fas fa-print me-1"></i>Print Invoice
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Hidden file input for import -->
+    <input type="file" id="importFileInput" accept=".json" style="display: none;" onchange="handleFileImport(event)">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Application State
         let appData = {
@@ -729,59 +1111,233 @@
                 companyPhone: '+1 (555) 123-4567',
                 currency: 'USD',
                 taxRate: 10,
-                invoicePrefix: 'INV'
+                invoicePrefix: 'INV',
+                dateFormat: 'MM/DD/YYYY'
             }
         };
 
+        // Currency symbols mapping
+        const currencySymbols = {
+            'USD': '$',
+            'EUR': '€',
+            'GBP': '£',
+            'INR': '₹',
+            'CAD': 'C$',
+            'AUD': 'A$'
+        };
+
+        // Charts storage
+        let charts = {};
+
         // Load data from localStorage
         function loadData() {
-            const saved = localStorage.getItem('invoiceProData');
-            if (saved) {
-                appData = { ...appData, ...JSON.parse(saved) };
+            try {
+                const saved = localStorage.getItem('invoiceProData');
+                if (saved) {
+                    const parsedData = JSON.parse(saved);
+                    appData = { ...appData, ...parsedData };
+                    
+                    // Ensure settings exist
+                    if (!appData.settings) {
+                        appData.settings = {
+                            companyName: 'Your Company Name',
+                            companyAddress: '123 Business Street, City, State 12345',
+                            companyEmail: 'contact@yourcompany.com',
+                            companyPhone: '+1 (555) 123-4567',
+                            currency: 'USD',
+                            taxRate: 10,
+                            invoicePrefix: 'INV',
+                            dateFormat: 'MM/DD/YYYY'
+                        };
+                    }
+                }
+                
+                updateDashboard();
+                updateAllTables();
+                updateReports();
+                loadSettingsToForm();
+                updateCurrencySymbols();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showToast('Error loading data', 'error');
             }
-            updateDashboard();
-            updateAllTables();
-            updateReports();
         }
 
         // Save data to localStorage
         function saveData() {
-            localStorage.setItem('invoiceProData', JSON.stringify(appData));
+            try {
+                localStorage.setItem('invoiceProData', JSON.stringify(appData));
+            } catch (error) {
+                console.error('Error saving data:', error);
+                showToast('Error saving data', 'error');
+            }
+        }
+
+        // Theme Management
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            const themeIcon = document.querySelector('#themeToggle i');
+            themeIcon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            
+            // Update charts for theme
+            setTimeout(() => {
+                updateDashboard();
+                updateReports();
+            }, 100);
+        }
+
+        // Load saved theme
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            const themeIcon = document.querySelector('#themeToggle i');
+            themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        // Toast notifications
+        function showToast(message, type = 'success') {
+            const toastContainer = document.querySelector('.toast-container');
+            const toastId = 'toast-' + Date.now();
+            
+            const bgClass = type === 'success' ? 'bg-success' : type === 'error' ? 'bg-danger' : 'bg-info';
+            
+            const toastHTML = `
+                <div class="toast" id="${toastId}" role="alert">
+                    <div class="toast-header ${bgClass} text-white">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
+                        <strong class="me-auto">${type === 'success' ? 'Success' : type === 'error' ? 'Error' : 'Info'}</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            `;
+            
+            toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+            
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement, { delay: 4000 });
+            toast.show();
+            
+            // Remove toast element after it's hidden
+            toastElement.addEventListener('hidden.bs.toast', () => {
+                toastElement.remove();
+            });
         }
 
         // Navigation
         function showPage(pageId) {
+            // Hide all sections
             document.querySelectorAll('.page-section').forEach(section => {
                 section.classList.remove('active');
             });
+            
+            // Show selected section
             document.getElementById(pageId).classList.add('active');
             
+            // Update navigation
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
             });
-            event.target.classList.add('active');
+            document.getElementById(`nav-${pageId}`).classList.add('active');
 
+            // Update page-specific content
             if (pageId === 'reports') {
                 setTimeout(updateReports, 100);
+            } else if (pageId === 'invoices') {
+                updateInvoicesTable();
+            } else if (pageId === 'subscriptions') {
+                updateSubscriptionsTable();
+            }
+        }
+
+        // Dashboard stat card click handlers
+        function showRevenueDetails() {
+            showPage('reports');
+            showToast('Showing detailed revenue reports', 'info');
+        }
+
+        function showInvoicesPage() {
+            showPage('invoices');
+        }
+
+        function showSubscriptionsPage() {
+            showPage('subscriptions');
+        }
+
+        function showPendingInvoices() {
+            showPage('invoices');
+            // Filter to show only pending invoices
+            document.getElementById('invoiceStatusFilter').value = 'pending';
+            filterInvoices();
+            showToast('Filtered to show pending invoices', 'info');
+        }
+
+        // Currency symbol updates
+        function updateCurrencySymbols() {
+            const symbol = currencySymbols[appData.settings.currency] || '$';
+            
+            // Update all currency symbols in the UI
+            document.querySelectorAll('#currencySymbol, #currencySymbolTax, #currencySymbolTotal').forEach(el => {
+                el.textContent = symbol;
+            });
+            
+            document.querySelectorAll('#subCurrencySymbol').forEach(el => {
+                el.textContent = symbol;
+            });
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            const symbol = currencySymbols[appData.settings.currency] || '$';
+            return `${symbol}${parseFloat(amount || 0).toFixed(2)}`;
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const format = appData.settings.dateFormat || 'MM/DD/YYYY';
+            
+            switch (format) {
+                case 'DD/MM/YYYY':
+                    return date.toLocaleDateString('en-GB');
+                case 'YYYY-MM-DD':
+                    return date.toISOString().split('T')[0];
+                default:
+                    return date.toLocaleDateString('en-US');
             }
         }
 
         // Dashboard Updates
         function updateDashboard() {
-            const totalRevenue = appData.invoices
-                .filter(inv => inv.status === 'paid')
-                .reduce((sum, inv) => sum + inv.total, 0);
-            
-            const pendingInvoices = appData.invoices.filter(inv => inv.status === 'pending').length;
-            const activeSubscriptions = appData.subscriptions.filter(sub => sub.status === 'active').length;
+            try {
+                const totalRevenue = appData.invoices
+                    .filter(inv => inv.status === 'paid')
+                    .reduce((sum, inv) => sum + (inv.total || 0), 0);
+                
+                const pendingInvoicesCount = appData.invoices.filter(inv => inv.status === 'pending').length;
+                const activeSubscriptionsCount = appData.subscriptions.filter(sub => sub.status === 'active').length;
 
-            document.getElementById('totalRevenue').textContent = `$${totalRevenue.toFixed(2)}`;
-            document.getElementById('totalInvoices').textContent = appData.invoices.length;
-            document.getElementById('activeSubscriptions').textContent = activeSubscriptions;
-            document.getElementById('pendingInvoices').textContent = pendingInvoices;
+                document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+                document.getElementById('totalInvoices').textContent = appData.invoices.length;
+                document.getElementById('activeSubscriptions').textContent = activeSubscriptionsCount;
+                document.getElementById('pendingInvoices').textContent = pendingInvoicesCount;
 
-            updateRecentInvoicesTable();
-            updateDashboardChart();
+                updateRecentInvoicesTable();
+                updateDashboardChart();
+                
+            } catch (error) {
+                console.error('Error updating dashboard:', error);
+            }
         }
 
         function updateRecentInvoicesTable() {
@@ -789,32 +1345,42 @@
             const recentInvoices = appData.invoices.slice(-5).reverse();
             
             if (recentInvoices.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No invoices yet</td></tr>';
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            <div class="empty-state">
+                                <i class="fas fa-file-invoice"></i>
+                                <p>No invoices yet. Create your first invoice!</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
                 return;
             }
 
             tbody.innerHTML = recentInvoices.map(invoice => `
                 <tr>
-                    <td>${invoice.number}</td>
+                    <td><strong>${invoice.number}</strong></td>
                     <td>${invoice.clientName}</td>
-                    <td>$${invoice.total.toFixed(2)}</td>
-                    <td><span class="badge bg-${getStatusColor(invoice.status)}">${invoice.status}</span></td>
-                    <td>${new Date(invoice.date).toLocaleDateString()}</td>
+                    <td>${formatCurrency(invoice.total)}</td>
+                    <td><span class="badge bg-${getStatusColor(invoice.status)}">${invoice.status.toUpperCase()}</span></td>
+                    <td>${formatDate(invoice.date)}</td>
                 </tr>
             `).join('');
         }
 
         function updateDashboardChart() {
-            const ctx = document.getElementById('revenueChart').getContext('2d');
+            const ctx = document.getElementById('revenueChart');
+            if (!ctx) return;
             
-            // Destroy existing chart if it exists
-            if (window.dashboardChart) {
-                window.dashboardChart.destroy();
+            // Destroy existing chart
+            if (charts.dashboard) {
+                charts.dashboard.destroy();
             }
 
             const monthlyData = getMonthlyRevenueData();
             
-            window.dashboardChart = new Chart(ctx, {
+            charts.dashboard = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: monthlyData.labels,
@@ -824,7 +1390,11 @@
                         borderColor: '#667eea',
                         backgroundColor: 'rgba(102, 126, 234, 0.1)',
                         tension: 0.4,
-                        fill: true
+                        fill: true,
+                        pointBackgroundColor: '#667eea',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
                     }]
                 },
                 options: {
@@ -840,45 +1410,91 @@
                             beginAtZero: true,
                             ticks: {
                                 callback: function(value) {
-                                    return '$' + value;
+                                    return formatCurrency(value);
                                 }
                             }
                         }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
                     }
                 }
             });
         }
 
+        function refreshDashboard() {
+            showToast('Dashboard refreshed', 'success');
+            updateDashboard();
+        }
+
         // Invoice Management
         function showCreateInvoiceModal() {
+            // Set default dates
             document.getElementById('invoiceDate').value = new Date().toISOString().split('T')[0];
             const dueDate = new Date();
             dueDate.setDate(dueDate.getDate() + 30);
             document.getElementById('dueDate').value = dueDate.toISOString().split('T')[0];
+            
+            // Update tax rate and currency symbols
             document.getElementById('invoiceTaxRate').textContent = appData.settings.taxRate;
+            updateCurrencySymbols();
+            
+            // Reset form
+            document.getElementById('invoiceForm').reset();
+            resetInvoiceItems();
             
             new bootstrap.Modal(document.getElementById('createInvoiceModal')).show();
+        }
+
+        function resetInvoiceItems() {
+            document.getElementById('invoiceItems').innerHTML = `
+                <div class="row invoice-item mb-2 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-control" placeholder="Item description" name="description" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Qty</label>
+                        <input type="number" class="form-control" placeholder="1" name="quantity" value="1" min="1" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Rate</label>
+                        <input type="number" class="form-control" placeholder="0.00" name="rate" step="0.01" min="0" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Amount</label>
+                        <input type="text" class="form-control" placeholder="0.00" name="amount" readonly>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeInvoiceItem(this)" title="Remove item">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            attachInvoiceItemListeners();
         }
 
         function addInvoiceItem() {
             const container = document.getElementById('invoiceItems');
             const newItem = document.createElement('div');
-            newItem.className = 'row invoice-item mb-2';
+            newItem.className = 'row invoice-item mb-2 align-items-end';
             newItem.innerHTML = `
                 <div class="col-md-4">
-                    <input type="text" class="form-control" placeholder="Description" name="description" required>
+                    <input type="text" class="form-control" placeholder="Item description" name="description" required>
                 </div>
                 <div class="col-md-2">
-                    <input type="number" class="form-control" placeholder="Qty" name="quantity" value="1" min="1" required>
+                    <input type="number" class="form-control" placeholder="1" name="quantity" value="1" min="1" required>
                 </div>
                 <div class="col-md-3">
-                    <input type="number" class="form-control" placeholder="Rate" name="rate" step="0.01" required>
+                    <input type="number" class="form-control" placeholder="0.00" name="rate" step="0.01" min="0" required>
                 </div>
                 <div class="col-md-2">
-                    <input type="text" class="form-control" placeholder="Amount" name="amount" readonly>
+                    <input type="text" class="form-control" placeholder="0.00" name="amount" readonly>
                 </div>
                 <div class="col-md-1">
-                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeInvoiceItem(this)">
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeInvoiceItem(this)" title="Remove item">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -888,24 +1504,37 @@
         }
 
         function removeInvoiceItem(button) {
-            button.closest('.invoice-item').remove();
-            calculateInvoiceTotal();
+            const items = document.querySelectorAll('.invoice-item');
+            if (items.length > 1) {
+                button.closest('.invoice-item').remove();
+                calculateInvoiceTotal();
+            } else {
+                showToast('At least one item is required', 'error');
+            }
         }
 
-        function attachInvoiceItemListeners(item) {
-            const qtyInput = item.querySelector('input[name="quantity"]');
-            const rateInput = item.querySelector('input[name="rate"]');
+        function attachInvoiceItemListeners(container = null) {
+            const items = container ? [container] : document.querySelectorAll('.invoice-item');
             
-            qtyInput.addEventListener('input', calculateInvoiceTotal);
-            rateInput.addEventListener('input', calculateInvoiceTotal);
+            items.forEach(item => {
+                const qtyInput = item.querySelector('input[name="quantity"]');
+                const rateInput = item.querySelector('input[name="rate"]');
+                
+                if (qtyInput && rateInput) {
+                    qtyInput.addEventListener('input', calculateInvoiceTotal);
+                    rateInput.addEventListener('input', calculateInvoiceTotal);
+                }
+            });
         }
 
         function calculateInvoiceTotal() {
             let subtotal = 0;
+            
             document.querySelectorAll('.invoice-item').forEach(item => {
                 const qty = parseFloat(item.querySelector('input[name="quantity"]').value) || 0;
                 const rate = parseFloat(item.querySelector('input[name="rate"]').value) || 0;
                 const amount = qty * rate;
+                
                 item.querySelector('input[name="amount"]').value = amount.toFixed(2);
                 subtotal += amount;
             });
@@ -926,84 +1555,72 @@
                 return;
             }
 
-            const items = [];
-            document.querySelectorAll('.invoice-item').forEach(item => {
-                const description = item.querySelector('input[name="description"]').value;
-                const quantity = parseFloat(item.querySelector('input[name="quantity"]').value);
-                const rate = parseFloat(item.querySelector('input[name="rate"]').value);
+            try {
+                const items = [];
+                let hasValidItems = false;
                 
-                if (description && quantity && rate) {
-                    items.push({
-                        description,
-                        quantity,
-                        rate,
-                        amount: quantity * rate
-                    });
+                document.querySelectorAll('.invoice-item').forEach(item => {
+                    const description = item.querySelector('input[name="description"]').value.trim();
+                    const quantity = parseFloat(item.querySelector('input[name="quantity"]').value);
+                    const rate = parseFloat(item.querySelector('input[name="rate"]').value);
+                    
+                    if (description && quantity > 0 && rate >= 0) {
+                        items.push({
+                            description,
+                            quantity,
+                            rate,
+                            amount: quantity * rate
+                        });
+                        hasValidItems = true;
+                    }
+                });
+
+                if (!hasValidItems) {
+                    showToast('Please add at least one valid invoice item', 'error');
+                    return;
                 }
-            });
 
-            if (items.length === 0) {
-                alert('Please add at least one invoice item.');
-                return;
+                const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
+                const tax = subtotal * (appData.settings.taxRate / 100);
+                const total = subtotal + tax;
+
+                const invoice = {
+                    id: Date.now(),
+                    number: `${appData.settings.invoicePrefix}-${String(appData.invoices.length + 1).padStart(4, '0')}`,
+                    clientName: document.getElementById('clientName').value.trim(),
+                    clientEmail: document.getElementById('clientEmail').value.trim(),
+                    clientAddress: document.getElementById('clientAddress').value.trim(),
+                    date: document.getElementById('invoiceDate').value,
+                    dueDate: document.getElementById('dueDate').value,
+                    items,
+                    subtotal,
+                    tax,
+                    total,
+                    status: 'pending',
+                    currency: appData.settings.currency,
+                    createdAt: new Date().toISOString()
+                };
+
+                appData.invoices.push(invoice);
+                saveData();
+                updateDashboard();
+                updateAllTables();
+
+                bootstrap.Modal.getInstance(document.getElementById('createInvoiceModal')).hide();
+                showToast(`Invoice ${invoice.number} created successfully!`, 'success');
+                
+            } catch (error) {
+                console.error('Error creating invoice:', error);
+                showToast('Error creating invoice', 'error');
             }
-
-            const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
-            const tax = subtotal * (appData.settings.taxRate / 100);
-            const total = subtotal + tax;
-
-            const invoice = {
-                id: Date.now(),
-                number: `${appData.settings.invoicePrefix}-${String(appData.invoices.length + 1).padStart(4, '0')}`,
-                clientName: document.getElementById('clientName').value,
-                clientEmail: document.getElementById('clientEmail').value,
-                clientAddress: document.getElementById('clientAddress').value,
-                date: document.getElementById('invoiceDate').value,
-                dueDate: document.getElementById('dueDate').value,
-                items,
-                subtotal,
-                tax,
-                total,
-                status: 'pending',
-                createdAt: new Date().toISOString()
-            };
-
-            appData.invoices.push(invoice);
-            saveData();
-            updateDashboard();
-            updateAllTables();
-
-            bootstrap.Modal.getInstance(document.getElementById('createInvoiceModal')).hide();
-            form.reset();
-            
-            // Reset invoice items to single item
-            document.getElementById('invoiceItems').innerHTML = `
-                <div class="row invoice-item mb-2">
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" placeholder="Description" name="description" required>
-                    </div>
-                    <div class="col-md-2">
-                        <input type="number" class="form-control" placeholder="Qty" name="quantity" value="1" min="1" required>
-                    </div>
-                    <div class="col-md-3">
-                        <input type="number" class="form-control" placeholder="Rate" name="rate" step="0.01" required>
-                    </div>
-                    <div class="col-md-2">
-                        <input type="text" class="form-control" placeholder="Amount" name="amount" readonly>
-                    </div>
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeInvoiceItem(this)">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            alert('Invoice created successfully!');
         }
 
         // Subscription Management
         function showCreateSubscriptionModal() {
             document.getElementById('startDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('subscriptionForm').reset();
+            updateCurrencySymbols();
+            
             new bootstrap.Modal(document.getElementById('createSubscriptionModal')).show();
         }
 
@@ -1014,28 +1631,34 @@
                 return;
             }
 
-            const subscription = {
-                id: Date.now(),
-                planName: document.getElementById('planName').value,
-                clientName: document.getElementById('subClientName').value,
-                clientEmail: document.getElementById('subClientEmail').value,
-                amount: parseFloat(document.getElementById('subAmount').value),
-                billingCycle: document.getElementById('billingCycle').value,
-                startDate: document.getElementById('startDate').value,
-                nextBilling: calculateNextBilling(document.getElementById('startDate').value, document.getElementById('billingCycle').value),
-                status: 'active',
-                createdAt: new Date().toISOString()
-            };
+            try {
+                const subscription = {
+                    id: Date.now(),
+                    planName: document.getElementById('planName').value.trim(),
+                    clientName: document.getElementById('subClientName').value.trim(),
+                    clientEmail: document.getElementById('subClientEmail').value.trim(),
+                    amount: parseFloat(document.getElementById('subAmount').value),
+                    billingCycle: document.getElementById('billingCycle').value,
+                    startDate: document.getElementById('startDate').value,
+                    description: document.getElementById('subDescription').value.trim(),
+                    nextBilling: calculateNextBilling(document.getElementById('startDate').value, document.getElementById('billingCycle').value),
+                    status: 'active',
+                    currency: appData.settings.currency,
+                    createdAt: new Date().toISOString()
+                };
 
-            appData.subscriptions.push(subscription);
-            saveData();
-            updateDashboard();
-            updateAllTables();
+                appData.subscriptions.push(subscription);
+                saveData();
+                updateDashboard();
+                updateAllTables();
 
-            bootstrap.Modal.getInstance(document.getElementById('createSubscriptionModal')).hide();
-            form.reset();
-            
-            alert('Subscription created successfully!');
+                bootstrap.Modal.getInstance(document.getElementById('createSubscriptionModal')).hide();
+                showToast(`Subscription "${subscription.planName}" created successfully!`, 'success');
+                
+            } catch (error) {
+                console.error('Error creating subscription:', error);
+                showToast('Error creating subscription', 'error');
+            }
         }
 
         function calculateNextBilling(startDate, cycle) {
@@ -1062,29 +1685,69 @@
 
         function updateInvoicesTable() {
             const tbody = document.getElementById('invoicesTable');
+            let invoices = [...appData.invoices];
             
-            if (appData.invoices.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No invoices created yet</td></tr>';
+            // Apply filters
+            const statusFilter = document.getElementById('invoiceStatusFilter')?.value;
+            const searchFilter = document.getElementById('invoiceSearchFilter')?.value.toLowerCase();
+            const dateFilter = document.getElementById('invoiceDateFilter')?.value;
+            
+            if (statusFilter) {
+                invoices = invoices.filter(inv => inv.status === statusFilter);
+            }
+            
+            if (searchFilter) {
+                invoices = invoices.filter(inv => 
+                    inv.clientName.toLowerCase().includes(searchFilter) ||
+                    inv.clientEmail.toLowerCase().includes(searchFilter) ||
+                    inv.number.toLowerCase().includes(searchFilter)
+                );
+            }
+            
+            if (dateFilter) {
+                invoices = invoices.filter(inv => inv.date === dateFilter);
+            }
+            
+            if (invoices.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center">
+                            <div class="empty-state">
+                                <i class="fas fa-file-invoice"></i>
+                                <p>${appData.invoices.length === 0 ? 'No invoices created yet' : 'No invoices match your filters'}</p>
+                                ${appData.invoices.length === 0 ? '<button class="btn btn-primary" onclick="showCreateInvoiceModal()">Create Your First Invoice</button>' : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
                 return;
             }
 
-            tbody.innerHTML = appData.invoices.map(invoice => `
+            tbody.innerHTML = invoices.map(invoice => `
                 <tr>
-                    <td>${invoice.number}</td>
-                    <td>${invoice.clientName}</td>
-                    <td>$${invoice.total.toFixed(2)}</td>
-                    <td><span class="badge bg-${getStatusColor(invoice.status)}">${invoice.status}</span></td>
-                    <td>${new Date(invoice.date).toLocaleDateString()}</td>
+                    <td><strong>${invoice.number}</strong></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary me-1" onclick="viewInvoice(${invoice.id})">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-success me-1" onclick="markAsPaid(${invoice.id})" ${invoice.status === 'paid' ? 'disabled' : ''}>
-                            <i class="fas fa-check"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteInvoice(${invoice.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <div>
+                            <strong>${invoice.clientName}</strong>
+                            <br><small class="text-muted">${invoice.clientEmail}</small>
+                        </div>
+                    </td>
+                    <td><strong>${formatCurrency(invoice.total)}</strong></td>
+                    <td><span class="badge bg-${getStatusColor(invoice.status)}">${invoice.status.toUpperCase()}</span></td>
+                    <td>${formatDate(invoice.date)}</td>
+                    <td>${formatDate(invoice.dueDate)}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-sm btn-outline-primary" onclick="viewInvoice(${invoice.id})" title="View Invoice">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" onclick="markAsPaid(${invoice.id})" ${invoice.status === 'paid' ? 'disabled' : ''} title="Mark as Paid">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteInvoice(${invoice.id})" title="Delete Invoice">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `).join('');
@@ -1094,28 +1757,61 @@
             const tbody = document.getElementById('subscriptionsTable');
             
             if (appData.subscriptions.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No subscriptions created yet</td></tr>';
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center">
+                            <div class="empty-state">
+                                <i class="fas fa-sync-alt"></i>
+                                <p>No subscriptions created yet</p>
+                                <button class="btn btn-primary" onclick="showCreateSubscriptionModal()">Create Your First Subscription</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
                 return;
             }
 
             tbody.innerHTML = appData.subscriptions.map(sub => `
                 <tr>
-                    <td>${sub.planName}</td>
-                    <td>${sub.clientName}</td>
-                    <td>$${sub.amount.toFixed(2)}</td>
-                    <td>${sub.billingCycle}</td>
-                    <td><span class="badge bg-${getStatusColor(sub.status)}">${sub.status}</span></td>
-                    <td>${new Date(sub.nextBilling).toLocaleDateString()}</td>
                     <td>
-                        <button class="btn btn-sm btn-outline-warning me-1" onclick="toggleSubscription(${sub.id})">
-                            <i class="fas fa-${sub.status === 'active' ? 'pause' : 'play'}"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteSubscription(${sub.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <strong>${sub.planName}</strong>
+                        ${sub.description ? `<br><small class="text-muted">${sub.description}</small>` : ''}
+                    </td>
+                    <td>
+                        <div>
+                            <strong>${sub.clientName}</strong>
+                            <br><small class="text-muted">${sub.clientEmail}</small>
+                        </div>
+                    </td>
+                    <td><strong>${formatCurrency(sub.amount)}</strong></td>
+                    <td><span class="badge bg-info">${sub.billingCycle.toUpperCase()}</span></td>
+                    <td><span class="badge bg-${getStatusColor(sub.status)}">${sub.status.toUpperCase()}</span></td>
+                    <td>${formatDate(sub.nextBilling)}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-sm btn-outline-warning" onclick="toggleSubscription(${sub.id})" title="${sub.status === 'active' ? 'Pause' : 'Activate'} Subscription">
+                                <i class="fas fa-${sub.status === 'active' ? 'pause' : 'play'}"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteSubscription(${sub.id})" title="Delete Subscription">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `).join('');
+        }
+
+        // Filter functions
+        function filterInvoices() {
+            updateInvoicesTable();
+        }
+
+        function clearInvoiceFilters() {
+            document.getElementById('invoiceStatusFilter').value = '';
+            document.getElementById('invoiceSearchFilter').value = '';
+            document.getElementById('invoiceDateFilter').value = '';
+            updateInvoicesTable();
+            showToast('Filters cleared', 'info');
         }
 
         // Utility Functions
@@ -1131,40 +1827,72 @@
         }
 
         function markAsPaid(invoiceId) {
-            const invoice = appData.invoices.find(inv => inv.id === invoiceId);
-            if (invoice) {
-                invoice.status = 'paid';
-                saveData();
-                updateDashboard();
-                updateAllTables();
+            try {
+                const invoice = appData.invoices.find(inv => inv.id === invoiceId);
+                if (invoice && invoice.status !== 'paid') {
+                    invoice.status = 'paid';
+                    invoice.paidDate = new Date().toISOString();
+                    saveData();
+                    updateDashboard();
+                    updateAllTables();
+                    showToast(`Invoice ${invoice.number} marked as paid!`, 'success');
+                }
+            } catch (error) {
+                console.error('Error marking invoice as paid:', error);
+                showToast('Error updating invoice status', 'error');
             }
         }
 
         function deleteInvoice(invoiceId) {
-            if (confirm('Are you sure you want to delete this invoice?')) {
-                appData.invoices = appData.invoices.filter(inv => inv.id !== invoiceId);
-                saveData();
-                updateDashboard();
-                updateAllTables();
+            const invoice = appData.invoices.find(inv => inv.id === invoiceId);
+            if (!invoice) return;
+            
+            if (confirm(`Are you sure you want to delete invoice ${invoice.number}?`)) {
+                try {
+                    appData.invoices = appData.invoices.filter(inv => inv.id !== invoiceId);
+                    saveData();
+                    updateDashboard();
+                    updateAllTables();
+                    showToast(`Invoice ${invoice.number} deleted successfully`, 'success');
+                } catch (error) {
+                    console.error('Error deleting invoice:', error);
+                    showToast('Error deleting invoice', 'error');
+                }
             }
         }
 
         function toggleSubscription(subId) {
-            const subscription = appData.subscriptions.find(sub => sub.id === subId);
-            if (subscription) {
-                subscription.status = subscription.status === 'active' ? 'paused' : 'active';
-                saveData();
-                updateDashboard();
-                updateAllTables();
+            try {
+                const subscription = appData.subscriptions.find(sub => sub.id === subId);
+                if (subscription) {
+                    const newStatus = subscription.status === 'active' ? 'paused' : 'active';
+                    subscription.status = newStatus;
+                    saveData();
+                    updateDashboard();
+                    updateAllTables();
+                    showToast(`Subscription ${newStatus === 'active' ? 'activated' : 'paused'}`, 'success');
+                }
+            } catch (error) {
+                console.error('Error toggling subscription:', error);
+                showToast('Error updating subscription', 'error');
             }
         }
 
         function deleteSubscription(subId) {
-            if (confirm('Are you sure you want to delete this subscription?')) {
-                appData.subscriptions = appData.subscriptions.filter(sub => sub.id !== subId);
-                saveData();
-                updateDashboard();
-                updateAllTables();
+            const subscription = appData.subscriptions.find(sub => sub.id === subId);
+            if (!subscription) return;
+            
+            if (confirm(`Are you sure you want to delete the subscription "${subscription.planName}"?`)) {
+                try {
+                    appData.subscriptions = appData.subscriptions.filter(sub => sub.id !== subId);
+                    saveData();
+                    updateDashboard();
+                    updateAllTables();
+                    showToast(`Subscription "${subscription.planName}" deleted successfully`, 'success');
+                } catch (error) {
+                    console.error('Error deleting subscription:', error);
+                    showToast('Error deleting subscription', 'error');
+                }
             }
         }
 
@@ -1183,10 +1911,10 @@
                                 <p class="mb-0">${appData.settings.companyPhone}</p>
                             </div>
                             <div class="col-md-6 text-end">
-                                <h2>INVOICE</h2>
+                                <h2 class="text-primary">INVOICE</h2>
                                 <p class="mb-1"><strong>Invoice #:</strong> ${invoice.number}</p>
-                                <p class="mb-1"><strong>Date:</strong> ${new Date(invoice.date).toLocaleDateString()}</p>
-                                <p class="mb-0"><strong>Due Date:</strong> ${new Date(invoice.dueDate).toLocaleDateString()}</p>
+                                <p class="mb-1"><strong>Date:</strong> ${formatDate(invoice.date)}</p>
+                                <p class="mb-0"><strong>Due Date:</strong> ${formatDate(invoice.dueDate)}</p>
                             </div>
                         </div>
                     </div>
@@ -1196,7 +1924,10 @@
                             <h5>Bill To:</h5>
                             <p class="mb-1"><strong>${invoice.clientName}</strong></p>
                             <p class="mb-1">${invoice.clientEmail}</p>
-                            <p class="mb-0">${invoice.clientAddress}</p>
+                            ${invoice.clientAddress ? `<p class="mb-0">${invoice.clientAddress}</p>` : ''}
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <span class="badge bg-${getStatusColor(invoice.status)} fs-6">${invoice.status.toUpperCase()}</span>
                         </div>
                     </div>
                     
@@ -1205,18 +1936,18 @@
                             <thead>
                                 <tr>
                                     <th>Description</th>
-                                    <th>Qty</th>
-                                    <th>Rate</th>
-                                    <th>Amount</th>
+                                    <th class="text-center">Qty</th>
+                                    <th class="text-end">Rate</th>
+                                    <th class="text-end">Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 ${invoice.items.map(item => `
                                     <tr>
                                         <td>${item.description}</td>
-                                        <td>${item.quantity}</td>
-                                        <td>$${item.rate.toFixed(2)}</td>
-                                        <td>$${item.amount.toFixed(2)}</td>
+                                        <td class="text-center">${item.quantity}</td>
+                                        <td class="text-end">${formatCurrency(item.rate)}</td>
+                                        <td class="text-end">${formatCurrency(item.amount)}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
@@ -1229,15 +1960,16 @@
                             <div class="invoice-total">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Subtotal:</span>
-                                    <span>$${invoice.subtotal.toFixed(2)}</span>
+                                    <span>${formatCurrency(invoice.subtotal)}</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Tax (${appData.settings.taxRate}%):</span>
-                                    <span>$${invoice.tax.toFixed(2)}</span>
+                                    <span>${formatCurrency(invoice.tax)}</span>
                                 </div>
+                                <hr class="my-2">
                                 <div class="d-flex justify-content-between">
                                     <strong>Total:</strong>
-                                    <strong>$${invoice.total.toFixed(2)}</strong>
+                                    <strong>${formatCurrency(invoice.total)}</strong>
                                 </div>
                             </div>
                         </div>
@@ -1256,10 +1988,15 @@
                 <html>
                     <head>
                         <title>Invoice</title>
-                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
                         <style>
-                            body { padding: 20px; }
+                            body { padding: 20px; font-family: Arial, sans-serif; }
                             .invoice-preview { background: white !important; }
+                            .invoice-total { background: #667eea !important; color: white !important; }
+                            @media print {
+                                body { margin: 0; }
+                                .invoice-preview { box-shadow: none !important; border: none !important; }
+                            }
                         </style>
                     </head>
                     <body>${content}</body>
@@ -1277,33 +2014,38 @@
         }
 
         function updateReportSummary() {
-            const totalRevenue = appData.invoices
-                .filter(inv => inv.status === 'paid')
-                .reduce((sum, inv) => sum + inv.total, 0);
-            
-            const currentMonth = new Date().getMonth();
-            const currentYear = new Date().getFullYear();
-            const monthlyRevenue = appData.invoices
-                .filter(inv => {
-                    const invDate = new Date(inv.date);
-                    return inv.status === 'paid' && 
-                           invDate.getMonth() === currentMonth && 
-                           invDate.getFullYear() === currentYear;
-                })
-                .reduce((sum, inv) => sum + inv.total, 0);
-            
-            const pendingAmount = appData.invoices
-                .filter(inv => inv.status === 'pending')
-                .reduce((sum, inv) => sum + inv.total, 0);
-            
-            const subscriptionRevenue = appData.subscriptions
-                .filter(sub => sub.status === 'active')
-                .reduce((sum, sub) => sum + sub.amount, 0);
+            try {
+                const totalRevenue = appData.invoices
+                    .filter(inv => inv.status === 'paid')
+                    .reduce((sum, inv) => sum + (inv.total || 0), 0);
+                
+                const currentMonth = new Date().getMonth();
+                const currentYear = new Date().getFullYear();
+                const monthlyRevenue = appData.invoices
+                    .filter(inv => {
+                        const invDate = new Date(inv.date);
+                        return inv.status === 'paid' && 
+                               invDate.getMonth() === currentMonth && 
+                               invDate.getFullYear() === currentYear;
+                    })
+                    .reduce((sum, inv) => sum + (inv.total || 0), 0);
+                
+                const pendingAmount = appData.invoices
+                    .filter(inv => inv.status === 'pending')
+                    .reduce((sum, inv) => sum + (inv.total || 0), 0);
+                
+                const subscriptionRevenue = appData.subscriptions
+                    .filter(sub => sub.status === 'active')
+                    .reduce((sum, sub) => sum + (sub.amount || 0), 0);
 
-            document.getElementById('reportTotalRevenue').textContent = `$${totalRevenue.toFixed(2)}`;
-            document.getElementById('reportMonthlyRevenue').textContent = `$${monthlyRevenue.toFixed(2)}`;
-            document.getElementById('reportPendingAmount').textContent = `$${pendingAmount.toFixed(2)}`;
-            document.getElementById('reportSubscriptionRevenue').textContent = `$${subscriptionRevenue.toFixed(2)}`;
+                document.getElementById('reportTotalRevenue').textContent = formatCurrency(totalRevenue);
+                document.getElementById('reportMonthlyRevenue').textContent = formatCurrency(monthlyRevenue);
+                document.getElementById('reportPendingAmount').textContent = formatCurrency(pendingAmount);
+                document.getElementById('reportSubscriptionRevenue').textContent = formatCurrency(subscriptionRevenue);
+                
+            } catch (error) {
+                console.error('Error updating report summary:', error);
+            }
         }
 
         function getMonthlyRevenueData() {
@@ -1315,7 +2057,7 @@
                 .filter(inv => inv.status === 'paid' && new Date(inv.date).getFullYear() === currentYear)
                 .forEach(inv => {
                     const month = new Date(inv.date).getMonth();
-                    data[month] += inv.total;
+                    data[month] += inv.total || 0;
                 });
 
             return {
@@ -1325,15 +2067,16 @@
         }
 
         function updateMonthlyRevenueChart() {
-            const ctx = document.getElementById('monthlyRevenueChart').getContext('2d');
+            const ctx = document.getElementById('monthlyRevenueChart');
+            if (!ctx) return;
             
-            if (window.monthlyChart) {
-                window.monthlyChart.destroy();
+            if (charts.monthly) {
+                charts.monthly.destroy();
             }
 
             const monthlyData = getMonthlyRevenueData();
             
-            window.monthlyChart = new Chart(ctx, {
+            charts.monthly = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: monthlyData.labels,
@@ -1342,7 +2085,8 @@
                         data: monthlyData.data,
                         backgroundColor: 'rgba(102, 126, 234, 0.8)',
                         borderColor: '#667eea',
-                        borderWidth: 1
+                        borderWidth: 1,
+                        borderRadius: 4
                     }]
                 },
                 options: {
@@ -1358,7 +2102,7 @@
                             beginAtZero: true,
                             ticks: {
                                 callback: function(value) {
-                                    return '$' + value;
+                                    return formatCurrency(value);
                                 }
                             }
                         }
@@ -1368,23 +2112,34 @@
         }
 
         function updateClientRevenueChart() {
-            const ctx = document.getElementById('clientRevenueChart').getContext('2d');
+            const ctx = document.getElementById('clientRevenueChart');
+            if (!ctx) return;
             
-            if (window.clientChart) {
-                window.clientChart.destroy();
+            if (charts.client) {
+                charts.client.destroy();
             }
 
             const clientData = {};
             appData.invoices
                 .filter(inv => inv.status === 'paid')
                 .forEach(inv => {
-                    clientData[inv.clientName] = (clientData[inv.clientName] || 0) + inv.total;
+                    clientData[inv.clientName] = (clientData[inv.clientName] || 0) + (inv.total || 0);
                 });
 
-            const labels = Object.keys(clientData).slice(0, 5); // Top 5 clients
-            const data = labels.map(client => clientData[client]);
+            const sortedClients = Object.entries(clientData)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 5); // Top 5 clients
+
+            const labels = sortedClients.map(([client]) => client);
+            const data = sortedClients.map(([,revenue]) => revenue);
             
-            window.clientChart = new Chart(ctx, {
+            if (labels.length === 0) {
+                // Show empty state
+                ctx.getContext('2d').clearRect(0, 0, ctx.width, ctx.height);
+                return;
+            }
+            
+            charts.client = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: labels,
@@ -1396,7 +2151,9 @@
                             '#f093fb',
                             '#f5576c',
                             '#4facfe'
-                        ]
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
                     }]
                 },
                 options: {
@@ -1404,92 +2161,243 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + formatCurrency(context.parsed);
+                                }
+                            }
                         }
                     }
                 }
             });
         }
 
+        function exportReports() {
+            try {
+                const reportData = {
+                    summary: {
+                        totalRevenue: appData.invoices.filter(inv => inv.status === 'paid').reduce((sum, inv) => sum + (inv.total || 0), 0),
+                        totalInvoices: appData.invoices.length,
+                        pendingInvoices: appData.invoices.filter(inv => inv.status === 'pending').length,
+                        activeSubscriptions: appData.subscriptions.filter(sub => sub.status === 'active').length
+                    },
+                    invoices: appData.invoices,
+                    subscriptions: appData.subscriptions,
+                    generatedAt: new Date().toISOString()
+                };
+                
+                const dataStr = JSON.stringify(reportData, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `invoicepro-reports-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+                
+                showToast('Reports exported successfully', 'success');
+            } catch (error) {
+                console.error('Error exporting reports:', error);
+                showToast('Error exporting reports', 'error');
+            }
+        }
+
         // Settings
+        function loadSettingsToForm() {
+            try {
+                document.getElementById('companyName').value = appData.settings.companyName || '';
+                document.getElementById('companyAddress').value = appData.settings.companyAddress || '';
+                document.getElementById('companyEmail').value = appData.settings.companyEmail || '';
+                document.getElementById('companyPhone').value = appData.settings.companyPhone || '';
+                document.getElementById('defaultCurrency').value = appData.settings.currency || 'USD';
+                document.getElementById('taxRate').value = appData.settings.taxRate || 10;
+                document.getElementById('invoicePrefix').value = appData.settings.invoicePrefix || 'INV';
+                document.getElementById('dateFormat').value = appData.settings.dateFormat || 'MM/DD/YYYY';
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
         function saveSettings() {
-            appData.settings.companyName = document.getElementById('companyName').value;
-            appData.settings.companyAddress = document.getElementById('companyAddress').value;
-            appData.settings.companyEmail = document.getElementById('companyEmail').value;
-            appData.settings.companyPhone = document.getElementById('companyPhone').value;
-            appData.settings.currency = document.getElementById('defaultCurrency').value;
-            appData.settings.taxRate = parseFloat(document.getElementById('taxRate').value);
-            appData.settings.invoicePrefix = document.getElementById('invoicePrefix').value;
-            
-            saveData();
-            alert('Settings saved successfully!');
+            try {
+                appData.settings.companyName = document.getElementById('companyName').value.trim();
+                appData.settings.companyAddress = document.getElementById('companyAddress').value.trim();
+                appData.settings.companyEmail = document.getElementById('companyEmail').value.trim();
+                appData.settings.companyPhone = document.getElementById('companyPhone').value.trim();
+                appData.settings.currency = document.getElementById('defaultCurrency').value;
+                appData.settings.taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+                appData.settings.invoicePrefix = document.getElementById('invoicePrefix').value.trim() || 'INV';
+                appData.settings.dateFormat = document.getElementById('dateFormat').value;
+                
+                saveData();
+                updateCurrencySymbols();
+                updateDashboard();
+                updateAllTables();
+                updateReports();
+                
+                showToast('Settings saved successfully!', 'success');
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showToast('Error saving settings', 'error');
+            }
         }
 
         function exportData() {
-            const dataStr = JSON.stringify(appData, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'invoicepro-data.json';
-            link.click();
-            URL.revokeObjectURL(url);
+            try {
+                const dataStr = JSON.stringify(appData, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `invoicepro-backup-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+                
+                showToast('Data exported successfully', 'success');
+            } catch (error) {
+                console.error('Error exporting data:', error);
+                showToast('Error exporting data', 'error');
+            }
+        }
+
+        function importData() {
+            document.getElementById('importFileInput').click();
+        }
+
+        function handleFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    // Validate imported data structure
+                    if (importedData.invoices && importedData.subscriptions && importedData.settings) {
+                        if (confirm('This will replace all current data. Are you sure you want to continue?')) {
+                            appData = importedData;
+                            saveData();
+                            loadData();
+                            showToast('Data imported successfully!', 'success');
+                        }
+                    } else {
+                        showToast('Invalid file format', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error importing data:', error);
+                    showToast('Error importing data. Please check the file format.', 'error');
+                }
+            };
+            reader.readAsText(file);
+            
+            // Reset file input
+            event.target.value = '';
         }
 
         function resetData() {
             if (confirm('Are you sure you want to reset all data? This action cannot be undone.')) {
-                localStorage.removeItem('invoiceProData');
-                appData = {
-                    invoices: [],
-                    subscriptions: [],
-                    settings: {
-                        companyName: 'Your Company Name',
-                        companyAddress: '123 Business Street, City, State 12345',
-                        companyEmail: 'contact@yourcompany.com',
-                        companyPhone: '+1 (555) 123-4567',
-                        currency: 'USD',
-                        taxRate: 10,
-                        invoicePrefix: 'INV'
+                if (confirm('This will permanently delete all invoices, subscriptions, and settings. Type "RESET" to confirm.')) {
+                    try {
+                        localStorage.removeItem('invoiceProData');
+                        appData = {
+                            invoices: [],
+                            subscriptions: [],
+                            settings: {
+                                companyName: 'Your Company Name',
+                                companyAddress: '123 Business Street, City, State 12345',
+                                companyEmail: 'contact@yourcompany.com',
+                                companyPhone: '+1 (555) 123-4567',
+                                currency: 'USD',
+                                taxRate: 10,
+                                invoicePrefix: 'INV',
+                                dateFormat: 'MM/DD/YYYY'
+                            }
+                        };
+                        
+                        // Destroy all charts
+                        Object.values(charts).forEach(chart => {
+                            if (chart) chart.destroy();
+                        });
+                        charts = {};
+                        
+                        updateDashboard();
+                        updateAllTables();
+                        updateReports();
+                        loadSettingsToForm();
+                        updateCurrencySymbols();
+                        
+                        showToast('All data has been reset successfully', 'success');
+                    } catch (error) {
+                        console.error('Error resetting data:', error);
+                        showToast('Error resetting data', 'error');
                     }
-                };
-                updateDashboard();
-                updateAllTables();
-                updateReports();
-                alert('All data has been reset.');
+                }
             }
         }
 
         // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
-            loadData();
-            
-            // Attach form listeners
-            document.getElementById('companyForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                saveSettings();
-            });
-            
-            document.getElementById('businessForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                saveSettings();
-            });
-            
-            // Attach invoice item calculation listeners
-            document.addEventListener('input', function(e) {
-                if (e.target.name === 'quantity' || e.target.name === 'rate') {
-                    calculateInvoiceTotal();
+            try {
+                loadTheme();
+                loadData();
+                
+                // Attach form listeners
+                document.getElementById('companyForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveSettings();
+                });
+                
+                document.getElementById('businessForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveSettings();
+                });
+                
+                // Attach invoice item calculation listeners
+                document.addEventListener('input', function(e) {
+                    if (e.target.name === 'quantity' || e.target.name === 'rate') {
+                        calculateInvoiceTotal();
+                    }
+                });
+                
+                // Currency change listener
+                document.getElementById('defaultCurrency').addEventListener('change', function() {
+                    updateCurrencySymbols();
+                });
+                
+                // Attach initial invoice item listeners
+                attachInvoiceItemListeners();
+                
+                // Update currency symbols on modal show
+                document.getElementById('createInvoiceModal').addEventListener('show.bs.modal', function() {
+                    updateCurrencySymbols();
+                });
+                
+                document.getElementById('createSubscriptionModal').addEventListener('show.bs.modal', function() {
+                    updateCurrencySymbols();
+                });
+                
+            } catch (error) {
+                console.error('Error during initialization:', error);
+                showToast('Error initializing application', 'error');
+            }
+        });
+
+        // Handle window resize for charts
+        window.addEventListener('resize', function() {
+            Object.values(charts).forEach(chart => {
+                if (chart) {
+                    chart.resize();
                 }
             });
-            
-            // Load settings into form
-            document.getElementById('companyName').value = appData.settings.companyName;
-            document.getElementById('companyAddress').value = appData.settings.companyAddress;
-            document.getElementById('companyEmail').value = appData.settings.companyEmail;
-            document.getElementById('companyPhone').value = appData.settings.companyPhone;
-            document.getElementById('defaultCurrency').value = appData.settings.currency;
-            document.getElementById('taxRate').value = appData.settings.taxRate;
-            document.getElementById('invoicePrefix').value = appData.settings.invoicePrefix;
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98e87f24c233a701',t:'MTc2MDQ1OTc5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98ee0a9632101c61',t:'MTc2MDUxNzkzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
